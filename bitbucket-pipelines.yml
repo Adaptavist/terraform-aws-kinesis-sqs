@@ -1,0 +1,27 @@
+image: adaptavist/all-tools:latest
+
+definitions:
+  checkov-image: &checkov-image
+    name: bridgecrew/checkov:latest
+    entrypoint:
+      - '/usr/bin/env'
+      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+
+  release: &release
+    name: release
+    image: ghcr.io/adaptavist/docker-semantic-release:17.4.2-alpine3.11
+    script:
+      - semantic-release -r ${BITBUCKET_GIT_HTTP_ORIGIN}
+
+  scripts:
+    - &checkov >
+      checkov --quiet --compact -s -d . -o github_failed_only > compliance-issues.md &&
+      checkov --quiet --compact -s -d .
+
+pipelines:
+  default:
+    - step: { name: 'Checkov analysis', script: [ *checkov ], image: *checkov-image, services: [ docker ] }
+
+  branches:
+    master:
+      - step: *release
