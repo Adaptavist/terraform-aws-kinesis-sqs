@@ -34,7 +34,7 @@ def lambda_handler(event, context):
                 MessageGroupId=data[data_primary_key]
             )
         else:
-            logger.error(f'NO ${data_primary_key} PROPERTY IN MESSAGE!')
+            logger.error(f'NO ${data_primary_key} PRfOPERTY IN MESSAGE!')
 
 
 
