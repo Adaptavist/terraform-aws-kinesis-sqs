@@ -1,5 +1,5 @@
 data "aws_kinesis_stream" "kinesis_stream" {
-  name = "ingest" + var.app_name
+  name = "ingest-${var.app_name}-${var.record_type}"
 }
 
 module "records_sqs" {
@@ -13,7 +13,7 @@ module "add_record_to_sqs" {
   source                = "../lambda"
   code_dir              = "../../../lambda/add_record_to_sqs"
   description           = "A lambda that takes a record from kinesis and pushes it onto a SQS FIFO queue"
-  function_name         = "add_record_to_sqs"
+  function_name         = "add_${var.app}_${var.record_type}_record_to_sqs"
   kms_key_arn_list      = [module.records_sqs.kms_key_arn]
   namespace             = local.namespace
   sqs_write_arn_list    = [module.records_sqs.queue_arn]
@@ -28,4 +28,19 @@ module "add_record_to_sqs" {
   }
 
   region = var.region
+}
+
+module "process_record" {
+  source            = "../lambda"
+  code_dir          = var.process_record_arn
+  description       = "A lambda that processes ${var.app} ${var.record_type} records"
+  function_name     = "process_${var.app}_${var.record_type}_record"
+  kms_key_arn_list  = [module.records_sqs.kms_key_arn]
+  namespace         = var.app
+  sqs_read_arn_list = [module.records_sqs.queue_arn]
+  stage             = var.stage
+  tags              = local.tags
+  region            = var.region
+
+// How to pass env varaibles to the passed lambda
 }
