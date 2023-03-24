@@ -1,3 +1,10 @@
+## [1.1.1](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.1.0...v1.1.1) (2023-03-24)
+
+
+### Bug Fixes
+
+* **Remove Git push:** semantic ([6bd01e7](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/commits/6bd01e78692a30c35c4b445b77da61b0f314a04d))
+
 # [1.1.0](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.0.0...v1.1.0) (2023-03-23)
 
 
