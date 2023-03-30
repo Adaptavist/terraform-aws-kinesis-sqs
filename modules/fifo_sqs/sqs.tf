@@ -37,9 +37,11 @@ resource "aws_sqs_queue" "dlq_sqs_queue" {
 }
 
 resource "aws_kms_key" "kms_key" {
-  description = "Key used for the SQS queue ${var.queue_name}"
-  policy      = data.aws_iam_policy_document.kms_policy.json
-  tags        = var.tags
+  description            = "Key used for the SQS queue ${var.queue_name}"
+  policy                 = data.aws_iam_policy_document.kms_policy.json
+  tags                   = var.tags
+  is_enabled             = true
+  enable_key_rotation    = true
 }
 
 resource "aws_kms_alias" "kms_alias" {
