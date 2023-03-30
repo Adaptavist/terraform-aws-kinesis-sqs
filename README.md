@@ -31,14 +31,14 @@ No requirements.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_data_primary_key"></a> [data\_primary\_key](#input\_data\_primary\_key) | n/a | `string` | n/a | yes |
-| <a name="input_process_record_dir"></a> [process\_record\_dir](#input\_process\_record\_dir) | n/a | `string` | n/a | yes |
-| <a name="input_product"></a> [product](#input\_product) | n/a | `string` | n/a | yes |
-| <a name="input_record_type"></a> [record\_type](#input\_record\_type) | n/a | `string` | n/a | yes |
-| <a name="input_region"></a> [region](#input\_region) | n/a | `string` | n/a | yes |
-| <a name="input_stage"></a> [stage](#input\_stage) | n/a | `string` | n/a | yes |
-| <a name="input_stage_type"></a> [stage\_type](#input\_stage\_type) | n/a | `string` | n/a | yes |
-| <a name="input_stream_name"></a> [stream\_name](#input\_stream\_name) | n/a | `string` | n/a | yes |
+| <a name="input_data_primary_key"></a> [data\_primary\_key](#input\_data\_primary\_key) | the primary key for the json payload sent by the product that is to be processed. e.g account_id | `string` | n/a | yes |
+| <a name="input_process_record_dir"></a> [process\_record\_dir](#input\_process\_record\_dir) | the path to the folder containing the code for the lambda that will process the record. e.g ./process_account_record | `string` | n/a | yes |
+| <a name="input_product"></a> [product](#input\_product) | the name of the product that is sending the data. e.g slack, salable | `string` | n/a | yes |
+| <a name="input_record_type"></a> [record\_type](#input\_record\_type) | the type of record sent by the product that to be processed. e.g contact, account etc | `string` | n/a | yes |
+| <a name="input_region"></a> [region](#input\_region) | n/a | `string` | aws region | yes |
+| <a name="input_stage"></a> [stage](#input\_stage) | the name stage of the development. e.g prod | `string` | n/a | yes |
+| <a name="input_stage_type"></a> [stage\_type](#input\_stage\_type) | the type of the stage. e.g production | `string` | n/a | yes |
+| <a name="input_stream_name"></a> [stream\_name](#input\_stream\_name) | the name of the kinesis stream that the json payload will be fulled from. e.g ingest-sendable-account | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(string)` | n/a | yes |
 
 ## Outputs
