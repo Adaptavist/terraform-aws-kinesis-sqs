@@ -24,17 +24,18 @@ def lambda_handler(event, context):
         dataJson = base64.b64decode(dataBase64)
         data = json.loads(dataJson)
         logger.info(data)
+        groupId = ""
+        
+        if data[data_primary_key] :
+            groupId = data[data_primary_key]
+        else:
+            groupId = dataBase64    
 
-        if data_primary_key in data:
-            dedupKey = data[data_primary_key] + data['type'] + data['sent_timestamp']
-            sqs.send_message(
+        sqs.send_message(
                 QueueUrl=queue_url,
                 MessageBody=dataJson.decode("utf-8"),
-                MessageDeduplicationId=dedupKey,
-                MessageGroupId=data[data_primary_key]
-            )
-        else:
-            logger.error(f'NO ${data_primary_key} sPROPERTY IN MESSAGE!')
+                MessageDeduplicationId=dataBase64,
+                MessageGroupId=groupId)      
 
 
 
