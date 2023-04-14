@@ -32,24 +32,25 @@ module "add_record_to_sqs" {
   region = var.region
 }
 
-module "process_record" {
-  source            = "./modules/lambda"
-  code_dir          = var.process_record_dir
-  description       = "A lambda that processes ${var.product} ${var.record_type} records"
-  function_name     = "process_${var.product}_${var.record_type}_record"
-  kms_key_arn_list  = [module.records_sqs.kms_key_arn]
-  namespace         = var.product
-  sqs_read_arn_list = [module.records_sqs.queue_arn]
-  stage             = var.stage
-  tags              = local.tags
-  region            = var.region
-  slack_sns_arn     = ""
+# module "process_record" {
+#   source            = "./modules/lambda"
+#   code_dir          = var.process_record_dir
+#   description       = "A lambda that processes ${var.product} ${var.record_type} records"
+#   function_name     = "process_${var.product}_${var.record_type}_record"
+#   kms_key_arn_list  = [module.records_sqs.kms_key_arn]
+#   namespace         = var.product
+#   sqs_read_arn_list = [module.records_sqs.queue_arn]
+#   stage             = var.stage
+#   tags              = local.tags
+#   region            = var.region
+#   slack_sns_arn     = ""
 
-  environment_variables = {
-    HUBSPOT_ACCESS_TOKEN          = "data.aws_ssm_parameter.hubspot_access_token.value"
-    STITCH_LICENSE_OBJECT_TYPE_ID = "data.aws_ssm_parameter.stitch_account_hubspot_object_id.value"
-  }
-}
+#   environment_variables = {
+#     HUBSPOT_ACCESS_TOKEN          = "data.aws_ssm_parameter.hubspot_access_token.value"
+#     STITCH_LICENSE_OBJECT_TYPE_ID = "data.aws_ssm_parameter.stitch_account_hubspot_object_id.value"
+#   }
+# }
+
 
 locals {
   service_name = "${var.product}-integration"
@@ -70,8 +71,8 @@ module "event_sources" {
 
   kinesis_arn                    = data.aws_kinesis_stream.kinesis_stream.arn
   kinesis_processing_lambda_arn  = module.add_record_to_sqs.lambda_arn
-  sqs_processing_lambda_arn      = module.process_record.lambda_arn
+  sqs_processing_lambda_arn      = var.process_record_lambda_arn
   sqs_queue_arn                  = module.records_sqs.queue_arn
   kinesis_processing_lambda_name = module.add_record_to_sqs.lambda_name
-  sqs_processing_lambda_name     = module.process_record.lambda_name
+  sqs_processing_lambda_name     = var.process_record_lambda_name
 }

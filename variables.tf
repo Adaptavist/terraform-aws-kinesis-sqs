@@ -33,3 +33,11 @@ variable "stage_type" {
 variable "stream_name" {
   type = string
 }
+
+variable "process_record_lambda_arn" {
+  type = string
+}
+
+variable "process_record_lambda_name" {
+  type = string
+}
