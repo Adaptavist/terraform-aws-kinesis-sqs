@@ -41,3 +41,7 @@ variable "process_record_lambda_arn" {
 variable "process_record_lambda_name" {
   type = string
 }
+
+variable "sqs_event_filtering_path" {
+  type = string
+}
