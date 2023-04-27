@@ -76,4 +76,5 @@ module "event_sources" {
   sqs_queue_arn                  = module.records_sqs.queue_arn
   kinesis_processing_lambda_name = module.add_record_to_sqs.lambda_name
   sqs_processing_lambda_name     = var.process_record_lambda_name
+  sqs_event_filtering_path       = var.sqs_event_filtering_path
 }
