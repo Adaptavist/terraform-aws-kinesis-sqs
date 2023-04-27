@@ -32,7 +32,6 @@ No requirements.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_data_primary_key"></a> [data\_primary\_key](#input\_data\_primary\_key) | the primary key for the json payload sent by the product that is to be processed. e.g account_id | `string` | n/a | yes |
-| <a name="input_process_record_dir"></a> [process\_record\_dir](#input\_process\_record\_dir) | the path to the folder containing the code for the lambda that will process the record. e.g ./process_account_record | `string` | n/a | yes |
 | <a name="input_product"></a> [product](#input\_product) | the name of the product that is sending the data. e.g slack, salable | `string` | n/a | yes |
 | <a name="input_record_type"></a> [record\_type](#input\_record\_type) | the type of record sent by the product that to be processed. e.g contact, account etc | `string` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | n/a | `string` | aws region | yes |

@@ -18,10 +18,6 @@ variable "data_primary_key" {
   type = string
 }
 
-variable "process_record_dir" {
-  type = string
-}
-
 variable "tags" {
   type = map(string)
 }
