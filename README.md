@@ -40,6 +40,7 @@ No requirements.
 | <a name="input_stage_type"></a> [stage\_type](#input\_stage\_type) | the type of the stage. e.g production | `string` | n/a | yes |
 | <a name="input_stream_name"></a> [stream\_name](#input\_stream\_name) | the name of the kinesis stream that the json payload will be fulled from. e.g ingest-sendable-account | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(string)` | n/a | yes |
+| <a name="input_sqs_event_filtering_pathr"></a> [sqs_event_filtering_path](#input\_sqs_event_filtering_path) | the relative path of the dig endpoint. Use this to filter the records coming from kinesis to only ones coming from this path | `string` | n/a | no |
 
 ## Outputs
 
