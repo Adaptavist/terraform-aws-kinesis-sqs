@@ -2,6 +2,13 @@ resource "aws_lambda_event_source_mapping" "sqs_source_mapping" {
   event_source_arn        = var.sqs_queue_arn
   function_name           = var.sqs_processing_lambda_arn
   function_response_types = ["ReportBatchItemFailures"]
+  filter_criteria {
+    filter {
+      pattern = jsonencode({
+          path : [var.sqs_event_filtering_path]
+      })
+    }
+  }
 }
 
 resource "aws_lambda_event_source_mapping" "kinesis_source_mapping" {

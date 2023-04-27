@@ -22,3 +22,7 @@ variable "kinesis_processing_lambda_name" {
   type = string
 }
 
+variable "sqs_event_filtering_path" {
+  type = string
+}
+
