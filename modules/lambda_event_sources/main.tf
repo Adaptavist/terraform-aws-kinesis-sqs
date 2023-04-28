@@ -5,7 +5,10 @@ resource "aws_lambda_event_source_mapping" "sqs_source_mapping" {
   filter_criteria {
     filter {
       pattern = jsonencode({
-          path : [var.sqs_event_filtering_path]
+        body = {
+          Temperature : [{ numeric : [">", 0, "<=", 100] }]
+          Location : ["New York"]
+        }
       })
     }
   }
