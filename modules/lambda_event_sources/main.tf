@@ -2,16 +2,6 @@ resource "aws_lambda_event_source_mapping" "sqs_source_mapping" {
   event_source_arn        = var.sqs_queue_arn
   function_name           = var.sqs_processing_lambda_arn
   function_response_types = ["ReportBatchItemFailures"]
-  filter_criteria {
-    filter {
-      pattern = jsonencode({
-        body = {
-          Temperature : [{ numeric : [">", 0, "<=", 100] }]
-          Location : ["New York"]
-        }
-      })
-    }
-  }
 }
 
 resource "aws_lambda_event_source_mapping" "kinesis_source_mapping" {
@@ -20,6 +10,13 @@ resource "aws_lambda_event_source_mapping" "kinesis_source_mapping" {
   starting_position              = "LATEST"
   bisect_batch_on_function_error = true
   maximum_retry_attempts         = 3
+    filter_criteria {
+    filter {
+      pattern = jsonencode({
+          path : [var.sqs_event_filtering_path]
+      })
+    }
+  }
 }
 
 resource "aws_lambda_permission" "allow_sqs" {
