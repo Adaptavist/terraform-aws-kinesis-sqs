@@ -14,6 +14,7 @@ module "sqs_message_processor" {
   function_name          = var.function_name
   enable_cloudwatch_logs = true
   aws_region             = var.region
+  disable_label_function_name_prefix = true
 
   environment_variables = var.environment_variables
 }
