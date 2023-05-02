@@ -10,6 +10,13 @@ resource "aws_lambda_event_source_mapping" "kinesis_source_mapping" {
   starting_position              = "LATEST"
   bisect_batch_on_function_error = true
   maximum_retry_attempts         = 3
+  filter_criteria {
+    filter {
+      pattern = jsonencode({
+          path : [var.sqs_event_filtering_path]
+      })
+    }
+  }
 
 }
 
