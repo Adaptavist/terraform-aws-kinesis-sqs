@@ -10,6 +10,7 @@ resource "aws_sqs_queue" "sqs_queue" {
   message_retention_seconds  = 1209600 # 14 days which is the max
   kms_master_key_id          = aws_kms_key.kms_key.key_id
   policy                     = data.aws_iam_policy_document.sqs_policy.json
+  kms_data_key_reuse_period_seconds = 300
 
   redrive_policy = jsonencode({
     deadLetterTargetArn = aws_sqs_queue.dlq_sqs_queue.arn
@@ -27,6 +28,7 @@ resource "aws_sqs_queue" "dlq_sqs_queue" {
   fifo_throughput_limit     = "perMessageGroupId"
   message_retention_seconds = 1209600 # 14 days which is the max
   policy                    = data.aws_iam_policy_document.dlq_sqs_policy.json
+  kms_data_key_reuse_period_seconds = 300
 
   redrive_allow_policy = jsonencode({
     redrivePermission = "byQueue",
