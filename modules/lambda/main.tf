@@ -15,6 +15,7 @@ module "sqs_message_processor" {
   enable_cloudwatch_logs = true
   aws_region             = var.region
   disable_label_function_name_prefix = true
+  tracing_mode = "Active"
 
   environment_variables = var.environment_variables
 }
