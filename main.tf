@@ -12,7 +12,7 @@ module "records_sqs" {
 
 module "add_record_to_sqs" {
   source                = "./modules/lambda"
-  code_dir              = "add_record_to_sqs"
+  code_dir              = "./add_record_to_sqs"
   description           = "A lambda that takes a record from kinesis and pushes it onto a SQS FIFO queue"
   function_name         = "add_${var.product}_${var.record_type}_record_to_sqs"
   kms_key_arn_list      = [module.records_sqs.kms_key_arn]
