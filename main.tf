@@ -2,6 +2,12 @@ data "aws_kinesis_stream" "kinesis_stream" {
   name = var.stream_name
 }
 
+
+# TODO: Output for the Redis host
+data "aws_elasticache_cluster" "redis_cluster" {
+  cluster_id = module.redis.redis_cluster_id
+}
+
 module "records_sqs" {
   source                = "./modules/fifo_sqs"
   dlq_max_receive_count = 10
@@ -27,6 +33,8 @@ module "add_record_to_sqs" {
     SQS_QUEUE_URL = module.records_sqs.queue_url
     IS_FIFO_QUEUE = "true",
     DATA_PRIMARY_KEY = var.data_primary_key
+    # TODO: Optional var for Redis host
+    HOST = data.aws_elasticache_cluster.redis_cluster.cache_nodes[0].address
   }
 
   region = var.region

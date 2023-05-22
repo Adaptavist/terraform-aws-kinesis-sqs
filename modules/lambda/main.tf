@@ -124,7 +124,7 @@ resource "aws_cloudwatch_metric_alarm" "error_alarm" {
 }
 
 
-# Security group rule for Redis cluster
+#TODO: Security group rule for Redis cluster
 
 resource "aws_security_group" "lambda_security_group" {
   name_prefix = var.function_name
