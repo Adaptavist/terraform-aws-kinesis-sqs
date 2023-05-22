@@ -122,3 +122,22 @@ resource "aws_cloudwatch_metric_alarm" "error_alarm" {
   insufficient_data_actions = []
   tags                      = var.tags
 }
+
+
+# Security group rule for Redis cluster
+
+resource "aws_security_group" "lambda_security_group" {
+  name_prefix = var.function_name
+  description = "lambda_security"
+  vpc_id      = var.vpc_id
+
+}
+
+resource "aws_security_group_rule" "lambda_security_group_rule" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 65535
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.lambda_security_group.id
+}
