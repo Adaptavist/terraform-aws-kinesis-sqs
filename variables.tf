@@ -45,4 +45,5 @@ variable "sqs_event_filtering_path" {
 variable "cluster_id" {
   type        = string
   description = "The ID / name of the Redis cluster"
+  default = null
 }

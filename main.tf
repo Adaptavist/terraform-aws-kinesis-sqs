@@ -3,6 +3,7 @@ data "aws_kinesis_stream" "kinesis_stream" {
 }
 
 data "aws_elasticache_cluster" "redis_cluster" {
+  count      = var.cluster_id != null ? 1 : 0
   cluster_id = var.cluster_id
 }
 
@@ -31,8 +32,7 @@ module "add_record_to_sqs" {
     SQS_QUEUE_URL = module.records_sqs.queue_url
     IS_FIFO_QUEUE = "true",
     DATA_PRIMARY_KEY = var.data_primary_key
-    # TODO: Optional var for Redis host
-    HOST = data.aws_elasticache_cluster.redis_cluster.cache_nodes[0].address
+    HOST = var.cluster_id != null ? data.aws_elasticache_cluster.redis_cluster[0].cache_nodes[0].address : null
   }
 
   region = var.region
