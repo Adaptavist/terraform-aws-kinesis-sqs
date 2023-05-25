@@ -7,6 +7,11 @@ data "aws_elasticache_cluster" "redis_cluster" {
   cluster_id = var.cluster_id
 }
 
+data "aws_subnet_ids" "subnets" {
+  count  = var.vpc_id != null ? 1 : 0
+  vpc_id = var.vpc_id
+}
+
 module "records_sqs" {
   source                = "./modules/fifo_sqs"
   dlq_max_receive_count = 10
@@ -36,6 +41,9 @@ module "add_record_to_sqs" {
   }
 
   region = var.region
+  # TODO: OPTIONAL VPC
+  vpc_subnet_ids = module.networking.private_subnet_ids
+  vpc_id = module.networking.vpc_id
 }
 
 locals {

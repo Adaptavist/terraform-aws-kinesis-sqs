@@ -129,17 +129,18 @@ resource "aws_cloudwatch_metric_alarm" "error_alarm" {
 #TODO: Security group rule for Redis cluster
 
 resource "aws_security_group" "lambda_security_group" {
+  count       = var.vpc_id != null ? 1 : 0
   name_prefix = var.function_name
   description = "lambda_security"
   vpc_id      = var.vpc_id
-
 }
 
 resource "aws_security_group_rule" "lambda_security_group_rule" {
-  type              = "egress"
-  from_port         = 0
-  to_port           = 65535
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.lambda_security_group.id
+  count              = var.vpc_id != null ? 1 : 0
+  type               = "egress"
+  from_port          = 0
+  to_port            = 65535
+  protocol           = "tcp"
+  cidr_blocks        = ["0.0.0.0/0"]
+  security_group_id  = aws_security_group.lambda_security_group[0].id
 }

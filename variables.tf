@@ -47,3 +47,9 @@ variable "cluster_id" {
   description = "The ID / name of the Redis cluster"
   default = null
 }
+
+variable "vpc_id" {
+  type = string
+  description = "Id of the VPC attached to the lambda"
+  default     = null
+}

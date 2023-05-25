@@ -66,7 +66,7 @@ variable "maximum_batching_window_in_seconds" {
 variable "vpc_id" {
   type = string
   description = "Id of the VPC attached to the lambda"
-  default = ""
+  default     = null
 }
 
 
