@@ -2,10 +2,8 @@ data "aws_kinesis_stream" "kinesis_stream" {
   name = var.stream_name
 }
 
-
-# TODO: Output for the Redis host
 data "aws_elasticache_cluster" "redis_cluster" {
-  cluster_id = module.redis.redis_cluster_id
+  cluster_id = var.cluster_id
 }
 
 module "records_sqs" {
