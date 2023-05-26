@@ -41,6 +41,7 @@ No requirements.
 | <a name="input_tags"></a> [tags](#input_tags)                                                              | n/a                                                                                                                          | `map(string)` | n/a        |   yes    |
 | <a name="input_sqs_event_filtering_pathr"></a> [sqs_event_filtering_path](#input_sqs_event_filtering_path) | the relative path of the dig endpoint. Use this to filter the records coming from kinesis to only ones coming from this path | `string`      | n/a        |    no    |
 | <a name="input_redis_cluster_id"></a> [redis_cluster_id](#input_redis_cluster_id)                          | The ID / name of the Redis cluster                                                                                           | `string`      | null       |    no    |
+| <a name="input_vpc_id"></a> [vpc_id](#input_vpc_id)                                                        | The ID / name of the VPC the Redis cluster is running in                                                                     | `string`      | null       |    no    |
 
 ## Outputs
 
