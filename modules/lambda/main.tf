@@ -18,9 +18,8 @@ module "sqs_message_processor" {
   enable_tracing = true
   tracing_mode = "Active"
   environment_variables = var.environment_variables
-  # TODO: These need to be optional
-  vpc_security_group_ids = [aws_security_group.lambda_security_group.id]
-  vpc_subnet_ids = var.vpc_subnet_ids
+  vpc_security_group_ids = var.vpc_id != null ? [aws_security_group.lambda_security_group.id] : []
+  vpc_subnet_ids = var.vpc_subnet_ids != null ? var.vpc_subnet_ids : []
 }
 
 data "aws_iam_policy_document" "access_policy_document" {
