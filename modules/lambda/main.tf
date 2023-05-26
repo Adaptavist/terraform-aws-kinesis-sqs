@@ -126,8 +126,6 @@ resource "aws_cloudwatch_metric_alarm" "error_alarm" {
 }
 
 
-#TODO: Security group rule for Redis cluster
-
 resource "aws_security_group" "lambda_security_group" {
   count       = var.vpc_id != null ? 1 : 0
   name_prefix = var.function_name
