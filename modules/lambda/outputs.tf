@@ -7,5 +7,5 @@ output "lambda_name" {
 }
 
 output "lambda_security_group_id" {
-  value = aws_security_group.lambda_security_group.id
+  value = var.vpc_id != null ? aws_security_group.lambda_security_group.id : null
 }
