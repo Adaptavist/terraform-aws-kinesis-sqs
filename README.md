@@ -41,7 +41,13 @@ No requirements.
 | <a name="input_tags"></a> [tags](#input_tags)                                                              | n/a                                                                                                                          | `map(string)` | n/a        |   yes    |
 | <a name="input_sqs_event_filtering_pathr"></a> [sqs_event_filtering_path](#input_sqs_event_filtering_path) | the relative path of the dig endpoint. Use this to filter the records coming from kinesis to only ones coming from this path | `string`      | n/a        |    no    |
 | <a name="input_redis_cluster_id"></a> [redis_cluster_id](#input_redis_cluster_id)                          | The ID / name of the Redis cluster                                                                                           | `string`      | null       |    no    |
-| <a name="input_vpc_id"></a> [vpc_id](#input_vpc_id)                                                        | The ID / name of the VPC the Redis cluster is running in                                                                     | `string`      | null       |    no    |
+| <a name="input_vpc_id"></a> [vpc_id](#input_vpc_id)                                                        | The ID / name of the VPC the Redis cluster is running in
+| <a name="input_vpc_id"></a> [vpc_id](#input_vpc_id)                                                        | The ID / name of the VPC the Redis cluster is running in                                                                     | `string`      | null       |    no    |                                                                     | `string`      | null       |    no    |
+| <a name="input_redis_hash_key"></a> [redis_hash_key](#input_redis_hash_key)                                                        | The key/s to create a distinct record on. If none are selected the whole record will be hashed                                                                    | `string`      | null       |    no    |                                                                     | `string`      | null       |    no    |
+
+
+
+
 
 ## Outputs
 
