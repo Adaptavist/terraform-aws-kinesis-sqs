@@ -6,7 +6,6 @@ output "lambda_name" {
   value = module.sqs_message_processor.lambda_name
 }
 
-# TODO: Output security group id
 output "lambda_security_group_id" {
   value = aws_security_group.lambda_security_group.id
 }
