@@ -41,9 +41,8 @@ module "add_record_to_sqs" {
   }
 
   region = var.region
-  # TODO: OPTIONAL VPC
-  vpc_subnet_ids = module.networking.private_subnet_ids
-  vpc_id = module.networking.vpc_id
+  vpc_subnet_ids  = var.vpc_id != null ? data.aws_subnet_ids.subnets.ids : null
+  vpc_id          = var.vpc_id
 }
 
 locals {
