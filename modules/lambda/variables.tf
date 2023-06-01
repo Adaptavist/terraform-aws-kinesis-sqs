@@ -69,5 +69,11 @@ variable "vpc_id" {
   default     = null
 }
 
+variable "vpc_subnet_ids" {
+  type        = list(string)
+  description = "List of subnet IDs associated with the VPC"
+  default     = null
+}
+
 
 
