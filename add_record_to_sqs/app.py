@@ -89,13 +89,11 @@ def send_to_sqs(data: dict, message_body: str, data_base_64: str) -> None:
         Parameters:
             data (dict): The payload to be sent to SQS
             message_body (str): Contents of the payload
-            data_base_64 (str): dataBase64 variable from the lambda_handler to be passed to the send_to_sqs function
+            data_base_64 (str): dataBase64 variable from the lambda_handler to be taken as the groupID if data_primary_key is not provided
     """
 
-    groupId = ""
-    if data[data_primary_key]:
+    if data_primary_key and data_primary_key in data:
         groupId = data[data_primary_key]
-        logger.info(groupId)
     else:
         groupId = data_base_64
 
@@ -116,7 +114,7 @@ def extract_keys(data:dict, keys: list) -> str:
         keys (list): List of keys to get required value from data
 
     Returns:
-        A dictionary containing the created ticket information
+        The value of the key provided
     """
     
     try:
