@@ -40,7 +40,6 @@ def lambda_handler(event: dict, context) -> None:
       
         # if a redis connection has been set then process data accordingly
         if redis.connection_pool.connection_kwargs['host']:
-            logger.info('removing NULLs for redis')
             # redis doesn't like null values so replace them with empty strings
             for key, value in data.items():
                 if value is None:
