@@ -55,6 +55,12 @@ variable "vpc_id" {
   default     = null
 }
 
+variable "vpc_subnet_ids" {
+  type        = list(string)
+  description = "List of subnet IDs associated with the VPC"
+  default     = null
+}
+
 variable "redis_hash_key" {
   type = list
   description = "The key used to extract a value from the data and create a distinct record on"
