@@ -23,18 +23,18 @@ module "example" {
   region         = "us-west-2"
   stage          = "stg"
   record_type    = "example"
-  data_primary_key = null
+  data_primary_key = "license_id"
   tags = {
     "Avst:BusinessUnit" = "platforms"
-    "Avst:Stage:Type"   = "example"
+    "Avst:Stage:Type"   = "staging"
   }
-  stage_type     = "example"
-  stream_name    = "example-stream"
-  process_record_lambda_arn = "arn:aws:lambda:us-west-2:1234567890:function:example-lambda"
-  process_record_lambda_name = "example-lambda"
-  sqs_event_filtering_path   = "example/path"
-  cluster_id     = null
-  vpc_id         = null
+  stage_type     = "staging"
+  stream_name    = "ingest-veniture-licenses-events"
+  process_record_lambda_arn = module.process_contact_record.lambda_arn 
+  process_record_lambda_name = module.process_contact_record.lambda_name
+  sqs_event_filtering_path   = ""
+  cluster_id     = "redis-shared-cluster"
+  vpc_id         = "vpc-00f39bb7c588fc508"
   redis_hash_key = null
 }
 
