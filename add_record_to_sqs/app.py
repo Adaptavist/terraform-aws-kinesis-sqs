@@ -143,7 +143,6 @@ def create_hash_key(key: str, data:dict) -> str:
         if key:
             redis_hash_key = ast.literal_eval(redis_key)
             new_key = extract_keys(data, redis_hash_key)
-            print(f'key extracted {new_key}')
             hash_key = hashlib.md5(new_key.encode()).hexdigest()
         else:
             hash_key = hashlib.md5(json.dumps(data, sort_keys=True).encode()).hexdigest()
