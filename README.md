@@ -43,7 +43,7 @@ No requirements.
 | <a name="input_redis_cluster_id"></a> [redis_cluster_id](#input_redis_cluster_id)                          | The ID / name of the Redis cluster                                                                                           | `string`      | null       |    no    |
 | <a name="input_vpc_id"></a> [vpc_id](#input_vpc_id)                                                        | The ID / name of the VPC the Redis cluster is running in
 | <a name="input_vpc_id"></a> [vpc_id](#input_vpc_id)                                                        | The ID / name of the VPC the Redis cluster is running in                                                                     | `string`      | null       |    no    |                                                                     | `string`      | null       |    no    |
-| <a name="input_redis_hash_key"></a> [redis_hash_key](#input_redis_hash_key)                                                        | The key/s to create a distinct record on. If none are selected the whole record will be hashed                                                                    | `string`      | null       |    no    |                                                                     | `string`      | null       |    no    |
+| <a name="input_redis_hash_key"></a> [redis_hash_key](#input_redis_hash_key)                                                        | The key to create a distinct record on. If not selected the whole record will be hashed                                                                    | `list`      | null       |    no    |                                                                     | `list`      | null       |    no    |
 
 
 
