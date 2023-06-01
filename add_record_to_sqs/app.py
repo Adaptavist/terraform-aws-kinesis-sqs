@@ -77,7 +77,7 @@ def data_to_redis(payload: dict, data_base_64: str) -> None:
             message_body = json.dumps(payload)
             send_to_sqs(payload, message_body, data_base_64)
         else:
-            (f"Record with hash key '{hash_key}' already exists in hash 'records'")
+            logger.info(f"Record with hash key '{hash_key}' already exists in hash 'records'")
     except Exception as e:
         logger.info(f'Problem sending data to the redis cluster / SQS {e}')
 
