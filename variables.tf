@@ -33,14 +33,17 @@ variable "stream_name" {
 
 variable "process_record_lambda_arn" {
   type = string
+  default = null
 }
 
 variable "process_record_lambda_name" {
   type = string
+  default = null
 }
 
 variable "sqs_event_filtering_path" {
   type = string
+  default = null
 }
 
 variable "cluster_id" {

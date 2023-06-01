@@ -30,6 +30,8 @@ module "example" {
   }
   stage_type     = "staging"
   stream_name    = "ingest-veniture-licenses-events"
+  process_record_lambda_arn = module.process_contact_record.lambda_arn 
+  process_record_lambda_name = module.process_contact_record.lambda_name
   sqs_event_filtering_path   = ""
   cluster_id     = "redis-shared-cluster"
   vpc_id         = "vpc-00f39bb7c588fc508"
