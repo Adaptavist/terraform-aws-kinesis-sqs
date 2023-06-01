@@ -65,7 +65,7 @@ variable "vpc_subnet_ids" {
 }
 
 variable "redis_hash_key" {
-  type = list
+  type = string
   description = "The key used to extract a value from the data and create a distinct record on"
   default     = null
 }
