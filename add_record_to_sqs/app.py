@@ -5,22 +5,26 @@ import base64
 import json
 from redis import Redis
 import hashlib
+import ast
 
-# =============SET LOGGING=====================================
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-logger.info('Loading function')
-# =============================================================
+
 # =============SET ENVIRONMENT VARIABLES=======================
 sqs = boto3.client('sqs')
 queue_url = os.environ.get('SQS_QUEUE_URL')
 is_fifo_queue = os.environ.get('IS_FIFO_QUEUE')
-logger.info("Queue url : " + queue_url)
+# ==============================================================
 data_primary_key = os.environ.get('DATA_PRIMARY_KEY', '')
-redis_hash_key = os.environ.get('REDIS_HASH_KEY','')
+redis_key = os.environ.get('REDIS_HASH_KEY','')
 host=os.environ.get('HOST','')
 redis = Redis(host=host, port=6379)
 # =============================================================
+# =============SET LOGGING=====================================
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+logger.info('Loading function')
+logger.info("Queue url : " + queue_url)
+# =============================================================
+
 
 def lambda_handler(event: dict, context) -> None:
     """
@@ -63,12 +67,8 @@ def data_to_redis(payload: dict, data_base_64: str) -> None:
             data_base_64 (str): dataBase64 variable from the lambda_handler to be passed to the send_to_sqs function
     """
 
-    key = extract_keys(payload, redis_hash_key)
+    hash_key = create_hash_key(key=redis_key, data=payload)
     try:
-        if key:
-            hash_key = hashlib.md5(key.encode()).hexdigest()
-        else:
-            hash_key = hashlib.md5(json.dumps(payload, sort_keys=True).encode()).hexdigest()
         if redis.hsetnx('records', hash_key, json.dumps(payload)):
             logger.info(f"New record with hash key '{hash_key}' added to hash 'records'")
             logger.info(f'Sending {payload} to SQS')
@@ -125,8 +125,31 @@ def extract_keys(data:dict, keys: list) -> str:
                 else:
                     break     
     except Exception as e:
-        logger.info(f'problem extracting the key value {e}')
+        logger.error(f'Problem occurred extract_keys: {e}')
     return str(extract)  
+
+def create_hash_key(key: str, data:dict) -> str:
+    """
+    Takes a specified key from the env vars. Returns a hash based on either this key or the entire record
+
+    Parameters:
+        key (str): The key to create a hash on
+        data (dict): The record processed from the kinesis stream
+
+    Returns:
+        A hash key to define a distinct record to send to redis
+    """
+    try:
+        if key:
+            redis_hash_key = ast.literal_eval(redis_key)
+            new_key = extract_keys(data, redis_hash_key)
+            print(f'key extracted {new_key}')
+            hash_key = hashlib.md5(new_key.encode()).hexdigest()
+        else:
+            hash_key = hashlib.md5(json.dumps(data, sort_keys=True).encode()).hexdigest()
+    except Exception as e:
+        logger.error(f'Problem occurred create_hash_key: {e}')
+    return hash_key
 
 
 
