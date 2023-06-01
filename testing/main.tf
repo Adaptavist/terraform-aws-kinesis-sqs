@@ -10,7 +10,7 @@ terraform {
     region         = "us-east-1"
     bucket         = "platforms-stg-data-lake-437069093246-tf-state"
     key            = "module-aws-kinesis-to-sqs-test.tfstate"
-    dynamodb_table = "module-aws-kinesis-to-sqs-test-437069093246-tf-state-lock"
+    dynamodb_table = "platforms-stg-data-lake-437069093246-tf-state-lock"
     profile        = ""
     role_arn       = ""
     encrypt        = "true"
@@ -18,7 +18,7 @@ terraform {
 }
 
 module "example" {
-  source         = "./main.tf"
+  source         = "../module"
   product        = "example-module-aws-kinesis-to-sqs"
   region         = "us-west-2"
   stage          = "stg"
