@@ -33,7 +33,8 @@ module "example" {
   sqs_event_filtering_path   = ""
   cluster_id     = "redis-shared-cluster"
   vpc_id         = "vpc-00f39bb7c588fc508"
-  redis_hash_key = null
+  # Test how this appears in the aws console, cant set it as a list
+  redis_hash_key = "data,app_id"
 }
 
 # stage             = var.stage
