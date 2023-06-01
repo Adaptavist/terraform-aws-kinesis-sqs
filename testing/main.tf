@@ -18,7 +18,7 @@ terraform {
 }
 
 module "example" {
-  source         = "../module"
+  source         = "../"
   product        = "example-module-aws-kinesis-to-sqs"
   region         = "us-west-2"
   stage          = "stg"
