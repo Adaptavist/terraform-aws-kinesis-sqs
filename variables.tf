@@ -53,3 +53,9 @@ variable "vpc_id" {
   description = "Id of the VPC attached to the lambda"
   default     = null
 }
+
+variable "redis_hash_key" {
+  type = list
+  description = "The key used to extract a value from the data and create a distinct record on"
+  default     = null
+}
