@@ -16,6 +16,7 @@ variable "record_type" {
 
 variable "data_primary_key" {
   type = string
+  default = null
 }
 
 variable "tags" {
