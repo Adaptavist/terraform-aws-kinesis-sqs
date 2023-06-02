@@ -7,10 +7,29 @@ data "aws_elasticache_cluster" "redis_cluster" {
   cluster_id = var.cluster_id
 }
 
-data "aws_subnet" "subnets" {
-  count  = var.vpc_id != null ? 1 : 0
+# data "aws_subnet" "private_subnets" {
+#   count  = var.vpc_id != null ? 1 : 0
+#   vpc_id = var.vpc_id
+#   availability_zone = "us-west-2a"
+#   tags = {
+#     "Avst:Service:Component" = "private-subnet"
+#   }
+# }
+
+data "aws_subnet" "private_subnets" {
+  for_each = toset(var.availability_zones)
+
   vpc_id = var.vpc_id
+
+  filter {
+    name   = "tag:Avst:Service:Component"
+    values = ["private-subnet"]
+  }
+
+  availability_zone = each.value
 }
+
+
 
 module "records_sqs" {
   source                = "./modules/fifo_sqs"
@@ -42,7 +61,9 @@ module "add_record_to_sqs" {
   }
 
   region = var.region
-  vpc_subnet_ids = var.vpc_id != null ? data.aws_subnet_ids.private_subnets.ids : null
+  vpc_subnet_ids = var.vpc_id != null ? values(data.aws_subnet.private_subnets)[*].id : []
+  # for one AZ
+  # vpc_subnet_ids = var.vpc_id != null ? data.aws_subnet.private_subnets[*].id : []
   vpc_id          = var.vpc_id
 }
 
