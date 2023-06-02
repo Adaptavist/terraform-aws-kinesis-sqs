@@ -5,8 +5,6 @@ import base64
 import json
 from redis import Redis
 import hashlib
-import ast
-
 
 # =============SET ENVIRONMENT VARIABLES=======================
 sqs = boto3.client('sqs')
