@@ -18,7 +18,7 @@ module "sqs_message_processor" {
   enable_tracing = true
   tracing_mode = "Active"
   environment_variables = var.environment_variables
-  vpc_security_group_ids = var.vpc_id != null ? [aws_security_group.lambda_security_group.id] : []
+  vpc_security_group_ids = var.vpc_id != null ? [aws_security_group.lambda_security_group[count.index].id] : []
   vpc_subnet_ids = var.vpc_subnet_ids != null ? var.vpc_subnet_ids : []
 }
 
@@ -139,5 +139,5 @@ resource "aws_security_group_rule" "lambda_security_group_rule" {
   to_port            = 65535
   protocol           = "tcp"
   cidr_blocks        = ["0.0.0.0/0"]
-  security_group_id  = var.vpc_id != null ? [aws_security_group.lambda_security_group[count.index].id] : []
+  security_group_id  = aws_security_group.lambda_security_group[count.index].id
 }

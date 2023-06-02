@@ -42,7 +42,7 @@ module "add_record_to_sqs" {
   }
 
   region = var.region
-  vpc_subnet_ids  = var.vpc_id != null ? data.aws_subnet.subnets[*].id : null
+  vpc_subnet_ids = var.vpc_id != null ? data.aws_subnet_ids.private_subnets.ids : null
   vpc_id          = var.vpc_id
 }
 
