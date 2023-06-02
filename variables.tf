@@ -30,11 +30,11 @@ variable "stage_type" {
 variable "stream_name" {
   type = string
 }
-
+ # TODO: These need to be added to the README
 variable "process_record_lambda_arn" {
   type = string
 }
-
+ #TODO: These need to be added to the README
 variable "process_record_lambda_name" {
   type = string
 }
