@@ -7,7 +7,7 @@ data "aws_elasticache_cluster" "redis_cluster" {
   cluster_id = var.cluster_id
 }
 
-data "aws_subnet_ids" "subnets" {
+data "aws_subnet" "subnets" {
   count  = var.vpc_id != null ? 1 : 0
   vpc_id = var.vpc_id
 }
@@ -42,7 +42,7 @@ module "add_record_to_sqs" {
   }
 
   region = var.region
-  vpc_subnet_ids  = var.vpc_id != null ? data.aws_subnet_ids.subnets.ids : null
+  vpc_subnet_ids  = var.vpc_id != null ? data.aws_subnet.subnets[*].id : null
   vpc_id          = var.vpc_id
 }
 
