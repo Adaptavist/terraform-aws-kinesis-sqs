@@ -141,7 +141,7 @@ def create_hash_key(key: str, data:dict) -> str:
     """
     try:
         if key:
-            redis_hash_key = ast.literal_eval(redis_key)
+            redis_hash_key = key.split(",")
             new_key = extract_keys(data, redis_hash_key)
             hash_key = hashlib.md5(new_key.encode()).hexdigest()
         else:
