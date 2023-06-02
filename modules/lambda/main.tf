@@ -139,5 +139,5 @@ resource "aws_security_group_rule" "lambda_security_group_rule" {
   to_port            = 65535
   protocol           = "tcp"
   cidr_blocks        = ["0.0.0.0/0"]
-  security_group_id  = aws_security_group.lambda_security_group[count.index].id
+  security_group_id  = var.vpc_id != null ? [aws_security_group.lambda_security_group[count.index].id] : []
 }
