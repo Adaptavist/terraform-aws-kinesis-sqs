@@ -7,7 +7,7 @@ data "aws_elasticache_cluster" "redis_cluster" {
   cluster_id = var.cluster_id
 }
 data "aws_subnet" "private_subnets" {
-  for_each = toset(var.availability_zones)
+  for_each = var.vpc_id != null ? toset(var.availability_zones) : {}
 
   vpc_id = var.vpc_id
 
