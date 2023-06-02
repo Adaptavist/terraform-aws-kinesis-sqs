@@ -64,7 +64,9 @@ variable "vpc_subnet_ids" {
 
 variable "availability_zones" {
   type    = list(string)
-  default = var.vpc_id != null ? ["us-west-2a", "us-west-2b", "us-west-2c"] : []
+   # this needs work
+  default = ["us-west-2a", "us-west-2b", "us-west-2c"]
+  # default = var.vpc_id != null ? ["us-west-2a", "us-west-2b", "us-west-2c"] : []
 }
 
 
