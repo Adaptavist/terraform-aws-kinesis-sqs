@@ -6,16 +6,6 @@ data "aws_elasticache_cluster" "redis_cluster" {
   count      = var.cluster_id != null ? 1 : 0
   cluster_id = var.cluster_id
 }
-
-# data "aws_subnet" "private_subnets" {
-#   count  = var.vpc_id != null ? 1 : 0
-#   vpc_id = var.vpc_id
-#   availability_zone = "us-west-2a"
-#   tags = {
-#     "Avst:Service:Component" = "private-subnet"
-#   }
-# }
-
 data "aws_subnet" "private_subnets" {
   for_each = toset(var.availability_zones)
 
@@ -62,8 +52,6 @@ module "add_record_to_sqs" {
 
   region = var.region
   vpc_subnet_ids = var.vpc_id != null ? values(data.aws_subnet.private_subnets)[*].id : []
-  # for one AZ
-  # vpc_subnet_ids = var.vpc_id != null ? data.aws_subnet.private_subnets[*].id : []
   vpc_id          = var.vpc_id
 }
 

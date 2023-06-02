@@ -19,7 +19,6 @@ module "sqs_message_processor" {
   tracing_mode = "Active"
   environment_variables = var.environment_variables
   vpc_security_group_ids = var.vpc_id != null ? [element(aws_security_group.lambda_security_group.*.id, 0)] : []
-  # vpc_security_group_ids = var.vpc_id != null ? [aws_security_group.lambda_security_group[count.index].id] : []
   vpc_subnet_ids = var.vpc_subnet_ids != null ? var.vpc_subnet_ids : []
 }
 
