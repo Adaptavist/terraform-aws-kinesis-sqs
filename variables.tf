@@ -71,3 +71,10 @@ variable "redis_hash_key" {
   description = "The key used to extract a value from the data and create a distinct record on"
   default     = null
 }
+
+variable "redis_security_group_id" {
+  type = string
+  description = "The security group id assocaited with the redis cluster"
+  default = null
+  
+}

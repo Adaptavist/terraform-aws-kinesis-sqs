@@ -56,6 +56,17 @@ module "add_record_to_sqs" {
   vpc_id          = var.vpc_id
 }
 
+# Set the inbound rules for the security group, required for redis interaction
+resource "aws_security_group_rule" "redis_security_group_rule" {
+  type              = "ingress"
+  from_port         = 6379
+  to_port           = 6379
+  protocol          = "tcp"
+  source_security_group_id = module.add_record_to_sqs.lambda_security_group_id
+  security_group_id = var.redis_security_group_id
+}
+
+
 locals {
   service_name = "${var.product}-integration"
   tags = {
