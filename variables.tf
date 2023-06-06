@@ -30,11 +30,9 @@ variable "stage_type" {
 variable "stream_name" {
   type = string
 }
- # TODO: These need to be added to the README
 variable "process_record_lambda_arn" {
   type = string
 }
- #TODO: These need to be added to the README
 variable "process_record_lambda_name" {
   type = string
 }
@@ -64,9 +62,7 @@ variable "vpc_subnet_ids" {
 
 variable "availability_zones" {
   type    = list(string)
-   # this needs work
   default = ["us-west-2a", "us-west-2b", "us-west-2c"]
-  # default = var.vpc_id != null ? ["us-west-2a", "us-west-2b", "us-west-2c"] : []
 }
 
 
