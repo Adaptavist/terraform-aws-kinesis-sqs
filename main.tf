@@ -58,6 +58,7 @@ module "add_record_to_sqs" {
 
 # Set the inbound rules for the security group, required for redis interaction
 resource "aws_security_group_rule" "redis_security_group_rule" {
+  count      = var.cluster_id != null ? 1 : 0
   type              = "ingress"
   from_port         = 6379
   to_port           = 6379
