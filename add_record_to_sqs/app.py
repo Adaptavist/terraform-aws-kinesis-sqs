@@ -89,16 +89,19 @@ def send_to_sqs(data: dict, message_body: str, data_base_64: str) -> None:
             data_base_64 (str): dataBase64 variable from the lambda_handler to be taken as the groupID if data_primary_key is not provided
     """
 
+    # Generate a hash-based MessageDeduplicationId
+    message_deduplication_id = hashlib.sha256(data_base_64.encode("utf-8")).hexdigest()[:128]
+
     if data_primary_key and data_primary_key in data:
-        groupId = data[data_primary_key]
+        groupId = str(data[data_primary_key])
     else:
-        groupId = data_base_64
+        groupId = message_deduplication_id
 
     sqs.send_message(
             QueueUrl=queue_url,
             MessageBody=message_body,
-            MessageDeduplicationId=data_base_64,
-            MessageGroupId=groupId)  
+            MessageDeduplicationId=message_deduplication_id,
+            MessageGroupId=groupId)   
 
 
 def extract_keys(data:dict, keys: list) -> str:
