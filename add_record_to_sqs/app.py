@@ -5,6 +5,8 @@ import base64
 import json
 from redis import Redis
 import hashlib
+import sys
+import uuid
 
 # =============SET ENVIRONMENT VARIABLES=======================
 sqs = boto3.client('sqs')
@@ -48,21 +50,20 @@ def lambda_handler(event: dict, context) -> None:
                     data[key] = ''
 
             # send data to redis
-            data_to_redis(payload=data, data_base_64=dataBase64)
+            data_to_redis_to_sqs(payload=data)
         else:
-            send_to_sqs(data=data, message_body=json.dumps(data), data_base_64=dataBase64)
+            send_to_sqs(data=data, message_body=json.dumps(data))
     
 
 
-def data_to_redis(payload: dict, data_base_64: str) -> None:
+def data_to_redis_to_sqs(payload: dict) -> None:
     """
         Takes in the processed data from the lambda_handler,
         creates a unique hash key of the record which determines whether it
         should be added to the Redis cluster and then sent to the SQS queue
     
         Parameters:
-            payload (dict): The veniture license record
-            data_base_64 (str): dataBase64 variable from the lambda_handler to be passed to the send_to_sqs function
+            payload (dict): The record to be sent
     """
 
     hash_key = create_hash_key(key=redis_key, data=payload)
@@ -73,24 +74,23 @@ def data_to_redis(payload: dict, data_base_64: str) -> None:
             
             # Send record to SQS queue
             message_body = json.dumps(payload)
-            send_to_sqs(payload, message_body, data_base_64)
+            send_to_sqs(payload, message_body)
         else:
             logger.info(f"Record with hash key '{hash_key}' already exists in hash 'records'")
     except Exception as e:
         logger.info(f'Problem sending data to the redis cluster / SQS {e}')
 
-def send_to_sqs(data: dict, message_body: str, data_base_64: str) -> None:
+def send_to_sqs(data: dict, message_body: str) -> None:
     """
         Takes the data proccessed from the lambda_handler and sends it to the SQS queue
     
         Parameters:
             data (dict): The payload to be sent to SQS
             message_body (str): Contents of the payload
-            data_base_64 (str): dataBase64 variable from the lambda_handler to be taken as the groupID if data_primary_key is not provided
     """
 
     # Generate a hash-based MessageDeduplicationId
-    message_deduplication_id = hashlib.sha256(data_base_64.encode("utf-8")).hexdigest()[:128]
+    message_deduplication_id = str(uuid.uuid4())
 
     if data_primary_key and data_primary_key in data:
         groupId = str(data[data_primary_key])
@@ -148,7 +148,8 @@ def create_hash_key(key: str, data:dict) -> str:
         else:
             hash_key = hashlib.md5(json.dumps(data, sort_keys=True).encode()).hexdigest()
     except Exception as e:
-        logger.error(f'Problem occurred create_hash_key: {e}')
+        logger.fatal(f'Problem occurred create_hash_key: {e} terminating the process')
+        sys.exit(1)
     return hash_key
 
 
