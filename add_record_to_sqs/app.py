@@ -13,8 +13,8 @@ sqs = boto3.client('sqs')
 queue_url = os.environ.get('SQS_QUEUE_URL')
 is_fifo_queue = os.environ.get('IS_FIFO_QUEUE')
 # ==============================================================
-data_primary_key = os.environ.get('DATA_PRIMARY_KEY', None)
-redis_key = os.environ.get('REDIS_HASH_KEY', None)
+data_primary_key = os.environ.get('DATA_PRIMARY_KEY', '')
+redis_key = os.environ.get('REDIS_HASH_KEY', '')
 host=os.environ.get('HOST','')
 redis = Redis(host=host, port=6379)
 # =============================================================
@@ -93,7 +93,7 @@ def send_to_sqs(data: dict, message_body: str) -> None:
     # Generate a hash-based MessageDeduplicationId
     message_deduplication_id = str(uuid.uuid4())
 
-    if data_primary_key is not None:
+    if data_primary_key:
         try:
             groupId = str(data[data_primary_key])
         except Exception as e:
@@ -121,7 +121,7 @@ def extract_keys(data:dict, keys: list | None) -> str:
         The value of the key provided
     """
     try:
-        if keys is not None:
+        if keys:
             extract = data
             for key in keys:
                 if key in extract:
@@ -146,7 +146,7 @@ def create_hash_key(key: str | None, data:dict) -> str:
         A hash key to define a distinct record to send to redis
     """
     try:
-        if key is not None:
+        if key:
             redis_hash_key = key.split(",")
             new_key = extract_keys(data, redis_hash_key)
             hash_key = hashlib.md5(new_key.encode()).hexdigest()
