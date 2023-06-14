@@ -18,6 +18,7 @@ definitions:
       checkov --quiet --compact -s -d . -o github_failed_only > compliance-issues.md &&
       checkov --quiet --compact -s -d .
     # Unit Tests
+    - &pip-install (cd add_record_to_sqs/ && pip3 install -r requirements.txt -t .)
     - &python-tests (cd add_record_to_sqs/ && python3 -m unittest discover .)
 
 pipelines:
@@ -29,7 +30,7 @@ pipelines:
           image: *checkov-image,
           services: [docker],
         }
-    - step: { name: "Run unit tests", script: [*python-tests] }
+    - step: { name: "Run unit tests", script: [*python-tests, *pip-install] }
 
   branches:
     master:

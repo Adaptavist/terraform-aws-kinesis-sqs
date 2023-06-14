@@ -24,12 +24,10 @@ class TestRecordProcessing(unittest.TestCase):
     def test_extract_keys(self):
         extract = extract_keys(self.input_record, self.keys)
         assert extract == 'create'
-      
     
     def test_extract_keys_none(self):
         extract = extract_keys(data=self.input_record)
         assert extract == 'No key provided'
-    
     
     def test_create_hash_key(self):
         hash = create_hash_key(self.input_record,self.key_str)
