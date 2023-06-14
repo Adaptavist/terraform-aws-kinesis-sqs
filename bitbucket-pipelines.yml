@@ -30,7 +30,7 @@ pipelines:
           image: *checkov-image,
           services: [docker],
         }
-    - step: { name: "Run unit tests", script: [*python-tests, *pip-install] }
+    - step: { name: "Run unit tests", script: [*pip-install, *python-tests] }
 
   branches:
     master:
