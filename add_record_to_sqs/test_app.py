@@ -27,16 +27,16 @@ class TestRecordProcessing(unittest.TestCase):
       
     
     def test_extract_keys_none(self):
-        extract = extract_keys(self.input_record, None)
+        extract = extract_keys(data=self.input_record)
         assert extract == 'No key provided'
     
     
     def test_create_hash_key(self):
-        hash = create_hash_key(self.key_str,self.input_record)
+        hash = create_hash_key(self.input_record,self.key_str)
         assert hash == self.hash_one
 
     def test_create_hash_key_none(self):
-        hash = create_hash_key(None,self.input_record)
+        hash = create_hash_key(data=self.input_record)
         assert hash == self.hash_none
 
 if __name__ == '__main__':

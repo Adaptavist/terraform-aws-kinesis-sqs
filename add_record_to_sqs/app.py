@@ -67,7 +67,7 @@ def data_to_redis_to_sqs(payload: dict) -> None:
             payload (dict): The record to be sent
     """
 
-    hash_key = create_hash_key(key=redis_key, data=payload)
+    hash_key = create_hash_key(data=payload, key=redis_key)
     try:
         if redis.hsetnx('records', hash_key, json.dumps(payload)):
             logger.info(f"New record with hash key '{hash_key}' added to hash 'records'")
@@ -108,20 +108,20 @@ def send_to_sqs(data: dict, message_body: str) -> None:
             MessageGroupId=groupId)   
 
 
-def extract_keys(data:dict, keys: list | None) -> str:
+def extract_keys(data:dict, keys: list = None) -> str:
     """
     Takes in a dict object and a key list.
     Loops through the data extracting the specified key
 
     Parameters:
         data (dict): The data to be iterated over
-        keys (list): List of keys to get required value from data
+        keys (list): List of keys to get required value from data (optional)
 
     Returns:
         The value of the key provided
     """
     try:
-        if keys:
+        if keys is not None:
             extract = data
             for key in keys:
                 if key in extract:
@@ -134,19 +134,19 @@ def extract_keys(data:dict, keys: list | None) -> str:
         logger.error(f'Problem occurred extract_keys: {e}')
     return str(extract)  
 
-def create_hash_key(key: str | None, data:dict) -> str:
+def create_hash_key(data:dict, key: str = None) -> str:
     """
     Takes a specified key from the env vars. Returns a hash based on either this key or the entire record
 
     Parameters:
-        key (str): The key to create a hash on
         data (dict): The record processed from the kinesis stream
+        key (str): The key to create a hash on (optional)
 
     Returns:
         A hash key to define a distinct record to send to redis
     """
     try:
-        if key:
+        if key is not None:
             redis_hash_key = key.split(",")
             new_key = extract_keys(data, redis_hash_key)
             hash_key = hashlib.md5(new_key.encode()).hexdigest()
