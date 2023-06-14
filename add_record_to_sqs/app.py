@@ -13,8 +13,8 @@ sqs = boto3.client('sqs')
 queue_url = os.environ.get('SQS_QUEUE_URL')
 is_fifo_queue = os.environ.get('IS_FIFO_QUEUE')
 # ==============================================================
-data_primary_key = os.environ.get('DATA_PRIMARY_KEY', '')
-redis_key = os.environ.get('REDIS_HASH_KEY','')
+data_primary_key = os.environ.get('DATA_PRIMARY_KEY', None)
+redis_key = os.environ.get('REDIS_HASH_KEY', None)
 host=os.environ.get('HOST','')
 redis = Redis(host=host, port=6379)
 # =============================================================
@@ -22,7 +22,8 @@ redis = Redis(host=host, port=6379)
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 logger.info('Loading function')
-logger.info("Queue url : " + queue_url)
+if queue_url:
+    logger.info("Queue url : " + queue_url)
 # =============================================================
 
 
@@ -92,7 +93,7 @@ def send_to_sqs(data: dict, message_body: str) -> None:
     # Generate a hash-based MessageDeduplicationId
     message_deduplication_id = str(uuid.uuid4())
 
-    if data_primary_key:
+    if data_primary_key is not None:
         try:
             groupId = str(data[data_primary_key])
         except Exception as e:
@@ -107,7 +108,7 @@ def send_to_sqs(data: dict, message_body: str) -> None:
             MessageGroupId=groupId)   
 
 
-def extract_keys(data:dict, keys: list) -> str:
+def extract_keys(data:dict, keys: list | None) -> str:
     """
     Takes in a dict object and a key list.
     Loops through the data extracting the specified key
@@ -119,20 +120,21 @@ def extract_keys(data:dict, keys: list) -> str:
     Returns:
         The value of the key provided
     """
-    
     try:
-        if keys:
+        if keys is not None:
             extract = data
             for key in keys:
                 if key in extract:
                     extract = extract[key]
                 else:
-                    break     
+                    break 
+        else:
+            return 'No key provided'
     except Exception as e:
         logger.error(f'Problem occurred extract_keys: {e}')
     return str(extract)  
 
-def create_hash_key(key: str, data:dict) -> str:
+def create_hash_key(key: str | None, data:dict) -> str:
     """
     Takes a specified key from the env vars. Returns a hash based on either this key or the entire record
 
@@ -144,7 +146,7 @@ def create_hash_key(key: str, data:dict) -> str:
         A hash key to define a distinct record to send to redis
     """
     try:
-        if key:
+        if key is not None:
             redis_hash_key = key.split(",")
             new_key = extract_keys(data, redis_hash_key)
             hash_key = hashlib.md5(new_key.encode()).hexdigest()
@@ -154,14 +156,3 @@ def create_hash_key(key: str, data:dict) -> str:
         logger.fatal(f'Problem occurred create_hash_key: {e} terminating the process')
         sys.exit(1)
     return hash_key
-
-
-
-
-
-
-
-
-
-
-
