@@ -92,8 +92,11 @@ def send_to_sqs(data: dict, message_body: str) -> None:
     # Generate a hash-based MessageDeduplicationId
     message_deduplication_id = str(uuid.uuid4())
 
-    if data_primary_key and data_primary_key in data:
-        groupId = str(data[data_primary_key])
+    if data_primary_key:
+        try:
+            groupId = str(data[data_primary_key])
+        except Exception as e:
+            raise Exception(f'Problem occurred with data_primary_key: {e}')
     else:
         groupId = message_deduplication_id
 
