@@ -4,8 +4,8 @@ definitions:
   checkov-image: &checkov-image
     name: bridgecrew/checkov:latest
     entrypoint:
-      - '/usr/bin/env'
-      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+      - "/usr/bin/env"
+      - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
   release: &release
     name: release
@@ -17,10 +17,19 @@ definitions:
     - &checkov >
       checkov --quiet --compact -s -d . -o github_failed_only > compliance-issues.md &&
       checkov --quiet --compact -s -d .
+    # Unit Tests
+    - &python-tests (cd add_record_to_sqs/ && python3 -m unittest discover .)
 
 pipelines:
   default:
-    - step: { name: 'Checkov analysis', script: [ *checkov ], image: *checkov-image, services: [ docker ] }
+    - step:
+        {
+          name: "Checkov analysis",
+          script: [*checkov],
+          image: *checkov-image,
+          services: [docker],
+        }
+    - step: { name: "Run unit tests", script: [*python-tests] }
 
   branches:
     master:

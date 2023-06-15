@@ -17,8 +17,9 @@ module "sqs_message_processor" {
   disable_label_function_name_prefix = true
   enable_tracing = true
   tracing_mode = "Active"
-
   environment_variables = var.environment_variables
+  vpc_security_group_ids = var.vpc_id != null ? [element(aws_security_group.lambda_security_group.*.id, 0)] : []
+  vpc_subnet_ids = var.vpc_subnet_ids != null ? var.vpc_subnet_ids : []
 }
 
 data "aws_iam_policy_document" "access_policy_document" {
@@ -121,4 +122,22 @@ resource "aws_cloudwatch_metric_alarm" "error_alarm" {
   alarm_description         = "This metric monitors SQS message processors"
   insufficient_data_actions = []
   tags                      = var.tags
+}
+
+
+resource "aws_security_group" "lambda_security_group" {
+  count       = var.vpc_id != null ? 1 : 0
+  name_prefix = var.function_name
+  description = "lambda_security"
+  vpc_id      = var.vpc_id
+}
+
+resource "aws_security_group_rule" "lambda_security_group_rule" {
+  count              = var.vpc_id != null ? 1 : 0
+  type               = "egress"
+  from_port          = 0
+  to_port            = 65535
+  protocol           = "tcp"
+  cidr_blocks        = ["0.0.0.0/0"]
+  security_group_id  = aws_security_group.lambda_security_group[count.index].id
 }

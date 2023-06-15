@@ -2,6 +2,26 @@ data "aws_kinesis_stream" "kinesis_stream" {
   name = var.stream_name
 }
 
+data "aws_elasticache_cluster" "redis_cluster" {
+  count      = var.cluster_id != null ? 1 : 0
+  cluster_id = var.cluster_id
+}
+
+data "aws_subnet" "private_subnets" {
+  for_each = var.vpc_id != null ? toset(var.availability_zones) : toset([])
+
+  vpc_id = var.vpc_id
+
+  filter {
+    name   = "tag:Avst:Service:Component"
+    values = ["private-subnet"]
+  }
+
+  availability_zone = each.value
+}
+
+
+
 module "records_sqs" {
   source                = "./modules/fifo_sqs"
   dlq_max_receive_count = 10
@@ -27,10 +47,26 @@ module "add_record_to_sqs" {
     SQS_QUEUE_URL = module.records_sqs.queue_url
     IS_FIFO_QUEUE = "true",
     DATA_PRIMARY_KEY = var.data_primary_key
+    REDIS_HASH_KEY = var.redis_hash_key
+    HOST = var.cluster_id != null ? data.aws_elasticache_cluster.redis_cluster[0].cache_nodes[0].address : null
   }
 
   region = var.region
+  vpc_subnet_ids = var.vpc_id != null ? values(data.aws_subnet.private_subnets)[*].id : []
+  vpc_id          = var.vpc_id
 }
+
+# Set the inbound rules for the security group, required for redis interaction
+resource "aws_security_group_rule" "redis_security_group_rule" {
+  count      = var.cluster_id != null ? 1 : 0
+  type              = "ingress"
+  from_port         = 6379
+  to_port           = 6379
+  protocol          = "tcp"
+  source_security_group_id = module.add_record_to_sqs.lambda_security_group_id
+  security_group_id = var.redis_security_group_id
+}
+
 
 locals {
   service_name = "${var.product}-integration"
