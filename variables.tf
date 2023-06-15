@@ -62,6 +62,7 @@ variable "vpc_subnet_ids" {
 
 variable "availability_zones" {
   type    = list(string)
+  default = []
 }
 
 
