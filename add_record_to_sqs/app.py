@@ -88,10 +88,15 @@ def send_to_sqs(data: dict, message_body: str) -> None:
         Parameters:
             data (dict): The payload to be sent to SQS
             message_body (str): Contents of the payload
+            data_base_64: 
     """
-
-    # Generate a hash-based MessageDeduplicationId
-    message_deduplication_id = str(uuid.uuid4())
+    
+    # If redis is used take a UUID else use a HASH
+    if redis.connection_pool.connection_kwargs['host']:
+        message_deduplication_id = str(uuid.uuid4())
+    else:
+        # Generate the hash-based MessageDeduplicationId
+        message_deduplication_id = hashlib.md5(json.dumps(data, sort_keys=True).encode()).hexdigest()
 
     if data_primary_key:
         try:
