@@ -1,6 +1,6 @@
 module "sqs_message_processor" {
   source                 = "Adaptavist/aws-lambda/module"
-  version                = "1.13.0"
+  version                = "1.34.0"
   name                   = var.function_name
   namespace              = var.namespace
   stage                  = var.stage
@@ -12,15 +12,54 @@ module "sqs_message_processor" {
   memory_size            = 512
   description            = var.description
   function_name          = var.function_name
-  enable_cloudwatch_logs = true
+  enable_cloudwatch_logs = var.enable_cloudwatch_logs
   aws_region             = var.region
   disable_label_function_name_prefix = true
   enable_tracing = true
   tracing_mode = "Active"
+  kms_key_arn  = aws_kms_key.kms_key.arn
   environment_variables = var.environment_variables
   vpc_security_group_ids = var.vpc_id != null ? [element(aws_security_group.lambda_security_group.*.id, 0)] : []
   vpc_subnet_ids = var.vpc_subnet_ids != null ? var.vpc_subnet_ids : []
 }
+
+
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+resource "aws_kms_key" "kms_key" {
+  description            = "Key used for the add record lambda ${var.function_name}"
+  policy                 = data.aws_iam_policy_document.kms_policy.json
+  tags                   = var.tags
+  is_enabled             = true
+  enable_key_rotation    = true
+}
+resource "aws_kms_alias" "kms_alias" {
+  name          = "alias/add_${var.product}_record_to_sqs_kms_key"
+  target_key_id = aws_kms_key.kms_key.key_id
+}
+data "aws_iam_policy_document" "kms_policy" {
+  statement {
+    sid     = "s3_access"
+    effect  = "Allow"
+    actions = ["kms:*"]
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+    resources = ["*"]
+  }
+  statement {
+    sid     = "account_access"
+    effect  = "Allow"
+    actions = ["kms:*"]
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+    }
+    resources = ["*"]
+  }
+}
+
 
 data "aws_iam_policy_document" "access_policy_document" {
   statement {
@@ -96,7 +135,7 @@ data "aws_iam_policy_document" "access_policy_document" {
 }
 
 resource "aws_iam_policy" "access_policy" {
-  name   = "${var.function_name}-process-data"
+  name   = "add_record_to_sqs-process-data"
   policy = data.aws_iam_policy_document.access_policy_document.json
 }
 

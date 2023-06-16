@@ -93,7 +93,9 @@ data "aws_iam_policy_document" "sqs_policy" {
     sid    = "lambda_send_message"
     effect = "Allow"
     actions = [
-      "sqs:SendMessage"
+      "sqs:SendMessage",
+      "sqs:ReceiveMessage"
+      
     ]
 
     principals {

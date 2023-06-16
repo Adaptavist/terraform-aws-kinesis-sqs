@@ -22,6 +22,10 @@ variable "function_name" {
   type = string
 }
 
+variable "product" {
+  type = string
+}
+
 variable "kms_key_arn_list" {
   type = list(string)
 }
@@ -73,6 +77,11 @@ variable "vpc_subnet_ids" {
   type        = list(string)
   description = "List of subnet IDs associated with the VPC"
   default     = null
+}
+
+variable "enable_cloudwatch_logs" {
+  type = bool
+  default = true
 }
 
 
