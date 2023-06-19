@@ -1,3 +1,10 @@
+## [1.1.2](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.1.1...v1.1.2) (2023-06-19)
+
+
+### Bug Fixes
+
+* **release:** release ([7ff677d](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/commits/7ff677d0226cf4a95275b35767266f2b8e3c7dc7))
+
 ## [1.1.1](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.1.0...v1.1.1) (2023-03-24)
 
 
