@@ -18,7 +18,7 @@ definitions:
       checkov --quiet --compact -s -d . -o github_failed_only > compliance-issues.md &&
       checkov --quiet --compact -s -d .
     # Unit Tests
-    - &python-tests (cd add_record_to_sqs/ && python3 -m unittest discover .)
+    - &python-tests (cd add_record_to_sqs/ && python3 -m unittest discover . && pip3 install -r requirements.txt -t .)
 
 pipelines:
   default:
