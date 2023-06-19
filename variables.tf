@@ -78,3 +78,16 @@ variable "redis_security_group_id" {
   default = null
   
 }
+
+variable "lambda_function_name_override" {
+  type = string
+  default = ""
+}
+variable "sqs_queue_name_override" {
+  type = string
+  default = ""
+}
+variable "enable_cloudwatch_logs" {
+  type = bool
+  default = true
+}
