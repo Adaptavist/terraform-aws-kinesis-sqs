@@ -21,8 +21,14 @@ module "sqs_message_processor" {
   environment_variables = var.environment_variables
   vpc_security_group_ids = var.vpc_id != null ? [element(aws_security_group.lambda_security_group.*.id, 0)] : []
   vpc_subnet_ids = var.vpc_subnet_ids != null ? var.vpc_subnet_ids : []
+  depends_on = [ null_resource.install_lambda_dependencies ]
 }
 
+resource "null_resource" "install_lambda_dependencies" {
+    provisioner "local-exec" {
+    command = "pip3 install -r ${path.module}/requirements.txt -t ."
+  }
+}
 
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
