@@ -26,7 +26,7 @@ module "sqs_message_processor" {
 
 resource "null_resource" "install_lambda_dependencies" {
     provisioner "local-exec" {
-    command = "pip3 install redis"
+    command = "pipfd3 install redis"
   }
 }
 
