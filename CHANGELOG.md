@@ -1,3 +1,10 @@
+# [1.5.0](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.4.0...v1.5.0) (2023-06-20)
+
+
+### Features
+
+* **initial:** redis install ([4cdfe72](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/commits/4cdfe7218bdfe9e19bc3f11cae3b124f4a3d2903))
+
 # [1.4.0](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.3.0...v1.4.0) (2023-06-20)
 
 
