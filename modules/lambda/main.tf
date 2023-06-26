@@ -26,7 +26,11 @@ module "sqs_message_processor" {
 
 resource "null_resource" "install_lambda_dependencies" {
     provisioner "local-exec" {
-    command = "pip3 install -r ${path.module}/add_record_to_sqs/requirements.txt -t ."
+    command = "pip3 install -r ${path.module}/requirements.txt -t ."
+
+  }
+    triggers = {
+        always_run = "${timestamp()}"
   }
 }
 
