@@ -26,7 +26,7 @@ module "sqs_message_processor" {
 
 resource "null_resource" "install_lambda_dependencies" {
     provisioner "local-exec" {
-    command = "pip3 install -r ${var.code_dir}/requirements.txt -t ."
+    command = "pip3 install -r ${var.code_dir}/requirements.txt"
 
   }
     triggers = {
