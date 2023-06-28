@@ -29,7 +29,7 @@ resource "null_resource" "install_lambda_dependencies" {
     command = "pip3 install -r ${var.code_dir}/requirements.txt -t ${var.code_dir}"
 
   }
-    triggers = {
+    triggers = { 
         always_run = "${timestamp()}"
   }
 }
