@@ -2,55 +2,29 @@
 
 This module creates a set of AWS resources that will pull data from a Kinesis data stream, put it onto an SQS queue and have a Lambda pick up the item and process it.
 
-## Requirements
-
-No requirements.
-
-## Providers
-
-| Name                                             | Version |
-| ------------------------------------------------ | ------- |
-| <a name="provider_aws"></a> [aws](#provider_aws) | n/a     |
-
-## Modules
-
-| Name                                                                                   | Source                         | Version |
-| -------------------------------------------------------------------------------------- | ------------------------------ | ------- |
-| <a name="module_add_record_to_sqs"></a> [add_record_to_sqs](#module_add_record_to_sqs) | ./modules/lambda               | n/a     |
-| <a name="module_event_sources"></a> [event_sources](#module_event_sources)             | ./modules/lambda_event_sources | n/a     |
-| <a name="module_process_record"></a> [process_record](#module_process_record)          | ./modules/lambda               | n/a     |
-| <a name="module_records_sqs"></a> [records_sqs](#module_records_sqs)                   | ./modules/fifo_sqs             | n/a     |
-
-## Resources
-
-| Name                                                                                                                               | Type        |
-| ---------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| [aws_kinesis_stream.kinesis_stream](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/kinesis_stream) | data source |
-
 ## Inputs
 
-| Name                                                                                                       | Description                                                                                                                  | Type          | Default    | Required |
-| ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------- | ---------- | :------: |
-| <a name="input_data_primary_key"></a> [data_primary_key](#input_data_primary_key)                          | the primary key for the json payload sent by the product that is to be processed. e.g account_id                             | `string`      | null        |   no    |
-| <a name="input_product"></a> [product](#input_product)                                                     | the name of the product that is sending the data. e.g slack, salable                                                         | `string`      | n/a        |   yes    |
-| <a name="input_record_type"></a> [record_type](#input_record_type)                                         | the type of record sent by the product that to be processed. e.g contact, account etc                                        | `string`      | n/a        |   yes    |
-| <a name="input_process_record_lambda_arn"></a> [process_record_lambda_arn](#input_redis_hash_key)                                                        |ARN of the lambda reading teh records from the SQS queue                                                                  | `string`      | n/a      |    yes    |   
-| <a name="input_process_record_lambda_name"></a> [process_record_lambda_name](#input_redis_hash_key)                                                        |The name of the lambda reading teh records from the SQS queue                                                                                                                | `string`      | n/a      |    yes    |   
-| <a name="input_region"></a> [region](#input_region)                                                        | n/a                                                                                                                          | `string`      | aws region |   yes    |
-| <a name="input_stage"></a> [stage](#input_stage)                                                           | the name stage of the development. e.g prod                                                                                  | `string`      | n/a        |   yes    |
-| <a name="input_stage_type"></a> [stage_type](#input_stage_type)                                            | the type of the stage. e.g production                                                                                        | `string`      | n/a        |   yes    |
-| <a name="input_stream_name"></a> [stream_name](#input_stream_name)                                         | the name of the kinesis stream that the json payload will be fulled from. e.g ingest-sendable-account                        | `string`      | n/a        |   yes    |
-| <a name="input_tags"></a> [tags](#input_tags)                                                              | n/a                                                                                                                          | `map(string)` | n/a        |   yes    |
-| <a name="input_sqs_event_filtering_pathr"></a> [sqs_event_filtering_path](#input_sqs_event_filtering_path) | the relative path of the dig endpoint. Use this to filter the records coming from kinesis to only ones coming from this path | `string`      | n/a        |    no    |
-| <a name="input_redis_cluster_id"></a> [redis_cluster_id](#input_redis_cluster_id)                          | The ID / name of the Redis cluster                                                                                           | `string`      | null       |    no    |
-| <a name="input_vpc_id"></a> [vpc_id](#input_vpc_id)                                                        | The ID / name of the VPC the Redis cluster is running in                                                                     | `string`      | null       |    no    |                                                                     | `string`      | null       |    no    |
-| <a name="input_redis_hash_key"></a> [redis_hash_key](#input_redis_hash_key)                                                        | The key used to extract a value from the data and create a distinct record on. If not selected the whole record will be hashed                                                                    | `string`      | null       |    no    |    
-| <a name="input_redis_security_group_id"></a> [redis_security_group_id](#input_redis_security_group_id)                                                        | The security group id assocaited with the redis cluster                                                                   | `string`      | null       |    no    |                                                                    | 
-| <a name="input_availability_zones"></a> [availability_zones](#input_availability_zones)                                                        |The availability zones for the vpc subnets. Only relevant if vpc_id has been specified                                                                   | `list(string)`      | []      |    no    |   
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| availability\_zones | List of availability zones if in use | `list(string)` | `[]` | no |
+| cluster\_id | The ID / name of the Redis cluster, if in use | `string` | `null` | no |
+| data\_primary\_key | The primary data key, this is used as the group id of the underlying SQS FIFO queue | `string` | `null` | no |
+| enable\_cloudwatch\_logs | Should cloudwatch logs be enabled for the lambda modules | `bool` | `true` | no |
+| lambda\_execution\_roles | List of ARNS of the lambdas that need to subscribe the SQS queue created by this module | `list(string)` | n/a | yes |
+| lambda\_function\_name\_override | Lambda function name override, used when migrating from older stacks as naming convention may not have been consistent | `string` | `""` | no |
+| process\_record\_lambda\_arn | The lambda arn that will be used process the records on the SQS queue | `string` | n/a | yes |
+| process\_record\_lambda\_name | The lambda name that will be used process the records on the SQS queue | `string` | n/a | yes |
+| product | Name of the product that is sending the data. e.g slack, salable | `string` | n/a | yes |
+| record\_type | The record type, used for naming resources | `string` | n/a | yes |
+| redis\_hash\_key | The key used to extract a value from the data and create a distinct record on | `string` | `null` | no |
+| redis\_security\_group\_id | The security group id associated with the redis cluster | `string` | `null` | no |
+| region | The region used, used for naming global resources like IAM roles | `string` | n/a | yes |
+| sqs\_event\_filtering\_path | The path to use to filter records off the kinesis stream, useful when dynamic endpoints have been used and only a subset of the records is required. | `string` | `null` | no |
+| sqs\_queue\_name\_override | SQS queue name override, used when migrating from older stacks as naming convention may not have been consistent | `string` | `""` | no |
+| stage | Name stage of the development. e.g prod | `string` | n/a | yes |
+| stage\_type | The type of the stage. e.g production | `string` | n/a | yes |
+| stream\_name | The kinesis stream to attach to | `string` | n/a | yes |
+| tags | Tags to be added to the created resources | `map(string)` | n/a | yes |
+| vpc\_id | Id of the VPC attached to the lambda, if in use | `string` | `null` | no |
+| vpc\_subnet\_ids | List of subnet IDs associated with the VPC, if in use | `list(string)` | `null` | no |
 
-
-
-
-## Outputs
-
-No outputs.

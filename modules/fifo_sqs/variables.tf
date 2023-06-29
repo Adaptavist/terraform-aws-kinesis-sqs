@@ -10,6 +10,10 @@ variable "slack_sns_arn" {
   type = string
 }
 
+variable "lambda_execution_roles" {
+  type = list(string)
+}
+
 variable "tags" {
   type = map(string)
 }

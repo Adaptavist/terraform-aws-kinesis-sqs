@@ -2,14 +2,14 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 resource "aws_sqs_queue" "sqs_queue" {
-  name                       = "${var.queue_name}.fifo"
-  fifo_queue                 = true
-  deduplication_scope        = "messageGroup"
-  fifo_throughput_limit      = "perMessageGroupId"
-  visibility_timeout_seconds = 60
-  message_retention_seconds  = 1209600 # 14 days which is the max
-  kms_master_key_id          = aws_kms_key.kms_key.key_id
-  policy                     = data.aws_iam_policy_document.sqs_policy.json
+  name                              = "${var.queue_name}.fifo"
+  fifo_queue                        = true
+  deduplication_scope               = "messageGroup"
+  fifo_throughput_limit             = "perMessageGroupId"
+  visibility_timeout_seconds        = 60
+  message_retention_seconds         = 1209600 # 14 days which is the max
+  kms_master_key_id                 = aws_kms_key.kms_key.key_id
+  policy                            = data.aws_iam_policy_document.sqs_policy.json
   kms_data_key_reuse_period_seconds = 300
 
   redrive_policy = jsonencode({
@@ -21,13 +21,13 @@ resource "aws_sqs_queue" "sqs_queue" {
 }
 
 resource "aws_sqs_queue" "dlq_sqs_queue" {
-  name                      = "${var.queue_name}-dlq.fifo"
-  kms_master_key_id         = aws_kms_key.kms_key.key_id
-  fifo_queue                = true
-  deduplication_scope       = "messageGroup"
-  fifo_throughput_limit     = "perMessageGroupId"
-  message_retention_seconds = 1209600 # 14 days which is the max
-  policy                    = data.aws_iam_policy_document.dlq_sqs_policy.json
+  name                              = "${var.queue_name}-dlq.fifo"
+  kms_master_key_id                 = aws_kms_key.kms_key.key_id
+  fifo_queue                        = true
+  deduplication_scope               = "messageGroup"
+  fifo_throughput_limit             = "perMessageGroupId"
+  message_retention_seconds         = 1209600 # 14 days which is the max
+  policy                            = data.aws_iam_policy_document.dlq_sqs_policy.json
   kms_data_key_reuse_period_seconds = 300
 
   redrive_allow_policy = jsonencode({
@@ -39,11 +39,11 @@ resource "aws_sqs_queue" "dlq_sqs_queue" {
 }
 
 resource "aws_kms_key" "kms_key" {
-  description            = "Key used for the SQS queue ${var.queue_name}"
-  policy                 = data.aws_iam_policy_document.kms_policy.json
-  tags                   = var.tags
-  is_enabled             = true
-  enable_key_rotation    = true
+  description         = "Key used for the SQS queue ${var.queue_name}"
+  policy              = data.aws_iam_policy_document.kms_policy.json
+  tags                = var.tags
+  is_enabled          = true
+  enable_key_rotation = true
 }
 
 resource "aws_kms_alias" "kms_alias" {
@@ -76,14 +76,12 @@ data "aws_iam_policy_document" "sqs_policy" {
     sid    = "lambda_receive"
     effect = "Allow"
     actions = [
-      "sqs:ReceiveMessage",
-      "sqs:Get*",
-      "sqs:Delete*"
+      "sqs:*"
     ]
 
     principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
+      type        = "AWS"
+      identifiers = var.lambda_execution_roles
     }
 
     resources = ["*"]
@@ -95,7 +93,6 @@ data "aws_iam_policy_document" "sqs_policy" {
     actions = [
       "sqs:SendMessage",
       "sqs:ReceiveMessage"
-      
     ]
 
     principals {
