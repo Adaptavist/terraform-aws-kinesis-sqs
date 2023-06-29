@@ -17,3 +17,9 @@ variable "lambda_execution_roles" {
 variable "tags" {
   type = map(string)
 }
+
+variable "sqs_visibility_timeout" {
+  type        = number
+  description = "The SQS visibility timeout in seconds"
+  default     = 60
+}

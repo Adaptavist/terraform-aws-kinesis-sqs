@@ -6,7 +6,7 @@ resource "aws_sqs_queue" "sqs_queue" {
   fifo_queue                        = true
   deduplication_scope               = "messageGroup"
   fifo_throughput_limit             = "perMessageGroupId"
-  visibility_timeout_seconds        = 60
+  visibility_timeout_seconds        = var.sqs_visibility_timeout
   message_retention_seconds         = 1209600 # 14 days which is the max
   kms_master_key_id                 = aws_kms_key.kms_key.key_id
   policy                            = data.aws_iam_policy_document.sqs_policy.json

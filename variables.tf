@@ -8,6 +8,12 @@ variable "lambda_execution_roles" {
   description = "List of ARNS of the lambdas that need to subscribe the SQS queue created by this module"
 }
 
+variable "sqs_visibility_timeout" {
+  type        = number
+  description = "The SQS visibility timeout in seconds"
+  default     = 60
+}
+
 variable "region" {
   type        = string
   description = "The region used, used for naming global resources like IAM roles"

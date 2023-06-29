@@ -1,6 +1,13 @@
 # AWS Lambda
 
-This module creates a set of AWS resources that will pull data from a Kinesis data stream, put it onto an SQS queue and have a Lambda pick up the item and process it.
+This module creates a set of AWS resources that will pull data from a Kinesis data stream, put it onto an SQS queue and have a Lambda pick up the item and process it. This module is designed to work with DIG.
+The module allows for consumers of the module to supply their own lambda to process the records that are fed into the underlying SQS queue. This module also supports using a Redis cluster for long term deduplication as FIFO queues only offer a 5 minute dedup window.
+
+![Infra layout](doc/architecture.png)
+
+See the above diagram. This module creates the resources numbered 9 and 8. 
+
+The consumer supplied lambda is at number 10. 
 
 ## Inputs
 
