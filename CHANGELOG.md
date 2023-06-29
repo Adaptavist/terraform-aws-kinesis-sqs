@@ -1,3 +1,10 @@
+## [1.15.2](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.15.1...v1.15.2) (2023-06-29)
+
+
+### Bug Fixes
+
+* supporting lambda roles and few fixes ([e2adc4e](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/commits/e2adc4e6ace07e344a4e9bd0579e993f4064b38c))
+
 ## [1.15.1](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.15.0...v1.15.1) (2023-06-29)
 
 
