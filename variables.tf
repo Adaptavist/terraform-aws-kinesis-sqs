@@ -1,5 +1,6 @@
 variable "product" {
   type = string
+  
 }
 
 variable "region" {
