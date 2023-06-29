@@ -34,8 +34,6 @@ resource "null_resource" "install_lambda_dependencies" {
   }
 }
 
-data "aws_caller_identity" "current" {}
-data "aws_region" "current" {}
 resource "aws_kms_key" "kms_key" {
   description            = "Key used for the add record lambda ${var.function_name}"
   policy                 = data.aws_iam_policy_document.kms_policy.json
@@ -43,10 +41,12 @@ resource "aws_kms_key" "kms_key" {
   is_enabled             = true
   enable_key_rotation    = true
 }
+
 resource "aws_kms_alias" "kms_alias" {
   name          = "alias/add_${var.product}_record_to_sqs_kms_key"
   target_key_id = aws_kms_key.kms_key.key_id
 }
+
 data "aws_iam_policy_document" "kms_policy" {
   statement {
     sid     = "s3_access"
@@ -69,7 +69,6 @@ data "aws_iam_policy_document" "kms_policy" {
     resources = ["*"]
   }
 }
-
 
 data "aws_iam_policy_document" "access_policy_document" {
   statement {
@@ -120,7 +119,6 @@ data "aws_iam_policy_document" "access_policy_document" {
     }
   }
 
-
   statement {
     effect = "Allow"
     actions = [
@@ -145,7 +143,7 @@ data "aws_iam_policy_document" "access_policy_document" {
 }
 
 resource "aws_iam_policy" "access_policy" {
-  name   = "add_record_to_sqs-process-data"
+  name   = "${var.product}_add_record_to_sqs-process-data"
   policy = data.aws_iam_policy_document.access_policy_document.json
 }
 
@@ -153,7 +151,6 @@ resource "aws_iam_role_policy_attachment" "access_policy_attach" {
   role       = module.sqs_message_processor.lambda_role_name
   policy_arn = aws_iam_policy.access_policy.arn
 }
-
 
 resource "aws_cloudwatch_metric_alarm" "error_alarm" {
   alarm_name          = module.sqs_message_processor.lambda_name
@@ -172,7 +169,6 @@ resource "aws_cloudwatch_metric_alarm" "error_alarm" {
   insufficient_data_actions = []
   tags                      = var.tags
 }
-
 
 resource "aws_security_group" "lambda_security_group" {
   count       = var.vpc_id != null ? 1 : 0

@@ -1,27 +1,3 @@
-data "aws_kinesis_stream" "kinesis_stream" {
-  name = var.stream_name
-}
-
-data "aws_elasticache_cluster" "redis_cluster" {
-  count      = var.cluster_id != null ? 1 : 0
-  cluster_id = var.cluster_id
-}
-
-data "aws_subnet" "private_subnets" {
-  for_each = var.vpc_id != null ? toset(var.availability_zones) : toset([])
-
-  vpc_id = var.vpc_id
-
-  filter {
-    name   = "tag:Avst:Service:Component"
-    values = ["private-subnet"]
-  }
-
-  availability_zone = each.value
-}
-
-
-
 module "records_sqs" {
   source                = "./modules/fifo_sqs"
   dlq_max_receive_count = 10
@@ -29,7 +5,6 @@ module "records_sqs" {
   tags                  = local.tags
   slack_sns_arn         = ""
 }
-
 
 module "add_record_to_sqs" {
   source                = "./modules/lambda"
