@@ -1,3 +1,10 @@
+## [1.15.1](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.15.0...v1.15.1) (2023-06-29)
+
+
+### Bug Fixes
+
+* seperating out resources ([afaf9a4](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/commits/afaf9a47857fe80bf35f201cdcb078b8cf593903))
+
 # [1.15.0](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.14.0...v1.15.0) (2023-06-28)
 
 
