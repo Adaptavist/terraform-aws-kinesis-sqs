@@ -13,11 +13,11 @@ resource "aws_lambda_event_source_mapping" "kinesis_source_mapping" {
   dynamic "filter_criteria" {
     for_each = var.sqs_event_filtering_path != "" ? [1] : []
     content {
-    filter {
-      pattern = jsonencode({
-         data : {path : [var.sqs_event_filtering_path]}
-      })
-    }
+      filter {
+        pattern = jsonencode({
+          data : { path : [var.sqs_event_filtering_path] }
+        })
+      }
     }
   }
 }

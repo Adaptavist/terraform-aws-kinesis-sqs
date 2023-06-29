@@ -1,48 +1,50 @@
 module "records_sqs" {
-  source                = "./modules/fifo_sqs"
-  dlq_max_receive_count = 10
-  queue_name            = coalesce(var.sqs_queue_name_override , "${var.product}-${var.record_type}")
-  tags                  = local.tags
-  slack_sns_arn         = ""
+  source                 = "./modules/fifo_sqs"
+  dlq_max_receive_count  = 10
+  queue_name             = coalesce(var.sqs_queue_name_override, "${var.product}-${var.record_type}")
+  tags                   = local.tags
+  slack_sns_arn          = var.slack_sns_arn
+  sqs_visibility_timeout = var.sqs_visibility_timeout
+  lambda_execution_roles = var.lambda_execution_roles
 }
 
 module "add_record_to_sqs" {
-  source                = "./modules/lambda"
-  code_dir              = "${path.module}/add_record_to_sqs"
-  description           = "A lambda that takes a record from kinesis and pushes it onto a SQS FIFO queue"
-  function_name         = coalesce(var.lambda_function_name_override, "add_${var.product}_${var.record_type}_record_to_sqs")
-  kms_key_arn_list      = [module.records_sqs.kms_key_arn]
-  namespace             = var.product
-  sqs_write_arn_list    = [module.records_sqs.queue_arn]
-  kinesis_read_arn_list = [data.aws_kinesis_stream.kinesis_stream.arn]
-  stage                 = var.stage
-  tags                  = local.tags
-  slack_sns_arn         = ""
+  source                 = "./modules/lambda"
+  code_dir               = "${path.module}/add_record_to_sqs"
+  description            = "A lambda that takes a record from kinesis and pushes it onto a SQS FIFO queue"
+  function_name          = coalesce(var.lambda_function_name_override, "add_${var.product}_${var.record_type}_record_to_sqs")
+  kms_key_arn_list       = [module.records_sqs.kms_key_arn]
+  namespace              = var.product
+  sqs_write_arn_list     = [module.records_sqs.queue_arn]
+  kinesis_read_arn_list  = [data.aws_kinesis_stream.kinesis_stream.arn]
+  stage                  = var.stage
+  tags                   = local.tags
+  slack_sns_arn          = var.slack_sns_arn
   enable_cloudwatch_logs = var.enable_cloudwatch_logs
   product                = var.product
 
   environment_variables = {
-    SQS_QUEUE_URL = module.records_sqs.queue_url
-    IS_FIFO_QUEUE = "true",
+    SQS_QUEUE_URL    = module.records_sqs.queue_url
+    IS_FIFO_QUEUE    = "true",
     DATA_PRIMARY_KEY = var.data_primary_key
-    REDIS_HASH_KEY = var.redis_hash_key
-    HOST = var.cluster_id != null ? data.aws_elasticache_cluster.redis_cluster[0].cache_nodes[0].address : null
+    REDIS_HASH_KEY   = var.redis_hash_key
+    HOST             = var.cluster_id != null ? data.aws_elasticache_cluster.redis_cluster[0].cache_nodes[0].address : null
   }
 
-  region = var.region
+  region         = var.region
   vpc_subnet_ids = var.vpc_id != null ? values(data.aws_subnet.private_subnets)[*].id : []
-  vpc_id          = var.vpc_id
+  vpc_id         = var.vpc_id
 }
 
 # Set the inbound rules for the security group, required for redis interaction
 resource "aws_security_group_rule" "redis_security_group_rule" {
-  count      = var.cluster_id != null ? 1 : 0
-  type              = "ingress"
-  from_port         = 6379
-  to_port           = 6379
-  protocol          = "tcp"
+  count                    = var.cluster_id != null ? 1 : 0
+  type                     = "ingress"
+  from_port                = 6379
+  to_port                  = 6379
+  protocol                 = "tcp"
   source_security_group_id = module.add_record_to_sqs.lambda_security_group_id
-  security_group_id = var.redis_security_group_id
+  security_group_id        = var.redis_security_group_id
 }
 
 

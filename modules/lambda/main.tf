@@ -1,45 +1,45 @@
 module "sqs_message_processor" {
-  source                 = "Adaptavist/aws-lambda/module"
-  version                = "1.34.0"
-  name                   = var.function_name
-  namespace              = var.namespace
-  stage                  = var.stage
-  tags                   = var.tags
-  lambda_code_dir        = var.code_dir
-  handler                = "app.lambda_handler"
-  runtime                = "python3.8"
-  timeout                = 60
-  memory_size            = 512
-  description            = var.description
-  function_name          = var.function_name
-  enable_cloudwatch_logs = var.enable_cloudwatch_logs
-  aws_region             = var.region
+  source                             = "Adaptavist/aws-lambda/module"
+  version                            = "1.34.0"
+  name                               = var.function_name
+  namespace                          = var.namespace
+  stage                              = var.stage
+  tags                               = var.tags
+  lambda_code_dir                    = var.code_dir
+  handler                            = "app.lambda_handler"
+  runtime                            = "python3.8"
+  timeout                            = 60
+  memory_size                        = 512
+  description                        = var.description
+  function_name                      = var.function_name
+  enable_cloudwatch_logs             = var.enable_cloudwatch_logs
+  aws_region                         = var.region
   disable_label_function_name_prefix = true
-  enable_tracing = true
-  tracing_mode = "Active"
-  kms_key_arn  = aws_kms_key.kms_key.arn
-  environment_variables = var.environment_variables
-  vpc_security_group_ids = var.vpc_id != null ? [element(aws_security_group.lambda_security_group.*.id, 0)] : []
-  vpc_subnet_ids = var.vpc_subnet_ids != null ? var.vpc_subnet_ids : []
-  depends_on = [ null_resource.install_lambda_dependencies ]
+  enable_tracing                     = true
+  tracing_mode                       = "Active"
+  kms_key_arn                        = aws_kms_key.kms_key.arn
+  environment_variables              = var.environment_variables
+  vpc_security_group_ids             = var.vpc_id != null ? [element(aws_security_group.lambda_security_group.*.id, 0)] : []
+  vpc_subnet_ids                     = var.vpc_subnet_ids != null ? var.vpc_subnet_ids : []
+  depends_on                         = [null_resource.install_lambda_dependencies]
 }
 
 resource "null_resource" "install_lambda_dependencies" {
-    provisioner "local-exec" {
+  provisioner "local-exec" {
     command = "pip3 install -r ${var.code_dir}/requirements.txt -t ${var.code_dir}"
 
   }
-    triggers = { 
-        always_run = "${timestamp()}"
+  triggers = {
+    always_run = "${timestamp()}"
   }
 }
 
 resource "aws_kms_key" "kms_key" {
-  description            = "Key used for the add record lambda ${var.function_name}"
-  policy                 = data.aws_iam_policy_document.kms_policy.json
-  tags                   = var.tags
-  is_enabled             = true
-  enable_key_rotation    = true
+  description         = "Key used for the add record lambda ${var.function_name}"
+  policy              = data.aws_iam_policy_document.kms_policy.json
+  tags                = var.tags
+  is_enabled          = true
+  enable_key_rotation = true
 }
 
 resource "aws_kms_alias" "kms_alias" {
@@ -178,11 +178,11 @@ resource "aws_security_group" "lambda_security_group" {
 }
 
 resource "aws_security_group_rule" "lambda_security_group_rule" {
-  count              = var.vpc_id != null ? 1 : 0
-  type               = "egress"
-  from_port          = 0
-  to_port            = 65535
-  protocol           = "tcp"
-  cidr_blocks        = ["0.0.0.0/0"]
-  security_group_id  = aws_security_group.lambda_security_group[count.index].id
+  count             = var.vpc_id != null ? 1 : 0
+  type              = "egress"
+  from_port         = 0
+  to_port           = 65535
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.lambda_security_group[count.index].id
 }

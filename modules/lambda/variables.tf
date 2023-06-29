@@ -68,7 +68,7 @@ variable "maximum_batching_window_in_seconds" {
 }
 
 variable "vpc_id" {
-  type = string
+  type        = string
   description = "Id of the VPC attached to the lambda"
   default     = null
 }
@@ -80,7 +80,7 @@ variable "vpc_subnet_ids" {
 }
 
 variable "enable_cloudwatch_logs" {
-  type = bool
+  type    = bool
   default = true
 }
 
