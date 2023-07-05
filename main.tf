@@ -73,4 +73,6 @@ module "event_sources" {
   kinesis_processing_lambda_name = module.add_record_to_sqs.lambda_name
   sqs_processing_lambda_name     = var.process_record_lambda_name
   sqs_event_filtering_path       = var.sqs_event_filtering_path
+  process_record_lambda_arn      = var.process_record_lambda_arn
+  process_record_lambda_name     = var.process_record_lambda_name
 }
