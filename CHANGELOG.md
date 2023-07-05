@@ -1,3 +1,10 @@
+## [1.16.2](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.16.1...v1.16.2) (2023-07-05)
+
+
+### Bug Fixes
+
+* fixing event sources logic ([c045c06](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/commits/c045c069e4f1d8ccdc8d2ddb0fdabbb838252012))
+
 ## [1.16.1](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.16.0...v1.16.1) (2023-07-05)
 
 
