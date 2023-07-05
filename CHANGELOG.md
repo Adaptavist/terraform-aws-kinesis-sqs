@@ -1,3 +1,10 @@
+## [1.16.3](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.16.2...v1.16.3) (2023-07-05)
+
+
+### Bug Fixes
+
+* removing defaults for lambda properties ([8854d46](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/commits/8854d46345d3d281ba91189b8e8755dd088ad45c))
+
 ## [1.16.2](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.16.1...v1.16.2) (2023-07-05)
 
 
