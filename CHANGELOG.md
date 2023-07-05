@@ -1,3 +1,10 @@
+## [1.16.1](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.16.0...v1.16.1) (2023-07-05)
+
+
+### Bug Fixes
+
+* fixing for_each ([669cbdd](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/commits/669cbdd5db96afaa3c1cb07e71906c425d4545d6))
+
 # [1.16.0](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.15.2...v1.16.0) (2023-07-05)
 
 
