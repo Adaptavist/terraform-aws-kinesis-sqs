@@ -63,7 +63,7 @@ locals {
 
 
 module "event_sources" {
-  for_each = var.process_record_lambda_arn != "" && var.process_record_lambda_name != "" ? [1] : []
+  count = var.process_record_lambda_arn != "" && var.process_record_lambda_name != "" ? 1 : 0
   source = "./modules/lambda_event_sources"
 
   kinesis_arn                    = data.aws_kinesis_stream.kinesis_stream.arn
