@@ -74,3 +74,4 @@ module "event_sources" {
   sqs_processing_lambda_name     = var.process_record_lambda_name
   sqs_event_filtering_path       = var.sqs_event_filtering_path
 }
+
