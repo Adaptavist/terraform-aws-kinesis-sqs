@@ -1,6 +1,3 @@
-data "aws_caller_identity" "current" {}
-data "aws_region" "current" {}
-
 resource "aws_sqs_queue" "sqs_queue" {
   name                              = "${var.queue_name}.fifo"
   fifo_queue                        = true
@@ -135,6 +132,25 @@ data "aws_iam_policy_document" "kms_policy" {
       identifiers = ["lambda.amazonaws.com"]
     }
     resources = ["*"]
+  }
+
+  dynamic "statement" {
+    for_each = length(var.lambda_execution_roles) > 0 ? [1] : []
+    content {
+      sid     = "lambda_decrypt_access"
+      effect  = "Allow"
+      actions = [
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey"]
+
+      principals {
+        type        = "AWS"
+        identifiers = var.lambda_execution_roles
+      }
+      resources = ["*"]
+    }
   }
 
   statement {
