@@ -1,3 +1,10 @@
+# [1.16.0](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.15.2...v1.16.0) (2023-07-05)
+
+
+### Features
+
+* added support for cross account lambda event sourcing ([a5138e0](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/commits/a5138e0e0275da6bbb1004924d1dfe650afdeeca))
+
 ## [1.15.2](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.15.1...v1.15.2) (2023-06-29)
 
 
