@@ -4,6 +4,15 @@
 ### Bug Fixes
 
 * fixing for_each ([669cbdd](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/commits/669cbdd5db96afaa3c1cb07e71906c425d4545d6))
+* triggering release ([5deccde](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/commits/5deccde5591061ef4240710938d6427e0bf2a978))
+* triggering release ([231f669](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/commits/231f669813a3abc677d33aa123fb5f83f1c1a32e))
+
+## [1.16.1](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.16.0...v1.16.1) (2023-07-05)
+
+
+### Bug Fixes
+
+* fixing for_each ([669cbdd](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/commits/669cbdd5db96afaa3c1cb07e71906c425d4545d6))
 * triggering release ([231f669](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/commits/231f669813a3abc677d33aa123fb5f83f1c1a32e))
 
 ## [1.16.1](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.16.0...v1.16.1) (2023-07-05)

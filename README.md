@@ -13,10 +13,10 @@ Statement": [
         {
             "Action": [
                 "sqs:*"
-                
+
             ],
             "Effect": "Allow",
-            "Resource": [*]
+            "Resource": ["*"]
         },
         {
             "Action": [
@@ -26,8 +26,9 @@ Statement": [
                 "kms:DescribeKey"                
             ],
             "Effect": "Allow",
-            "Resource": [*]
+            "Resource": ["*"]
         }
+]
 ```
 
 The resource blocks should be tightened down as you see fit, these can be adjusted to the arn of the SQS queue or can use something like ```arn:aws:sqs:*:123456789012:*```.
