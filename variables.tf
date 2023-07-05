@@ -109,11 +109,13 @@ variable "lambda_function_name_override" {
   default     = ""
   description = "Lambda function name override, used when migrating from older stacks as naming convention may not have been consistent"
 }
+
 variable "sqs_queue_name_override" {
   type        = string
   default     = ""
   description = "SQS queue name override, used when migrating from older stacks as naming convention may not have been consistent"
 }
+
 variable "enable_cloudwatch_logs" {
   type        = bool
   default     = true
