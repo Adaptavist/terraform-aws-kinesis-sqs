@@ -63,7 +63,7 @@ locals {
 
 
 module "event_sources" {
-  count = var.process_record_lambda_arn != "" && var.process_record_lambda_name != "" ? 1 : 0
+  count  = var.process_record_lambda_arn != "" && var.process_record_lambda_name != "" ? 1 : 0
   source = "./modules/lambda_event_sources"
 
   kinesis_arn                    = data.aws_kinesis_stream.kinesis_stream.arn
@@ -74,4 +74,3 @@ module "event_sources" {
   sqs_processing_lambda_name     = var.process_record_lambda_name
   sqs_event_filtering_path       = var.sqs_event_filtering_path
 }
-
