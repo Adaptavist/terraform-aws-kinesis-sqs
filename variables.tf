@@ -5,7 +5,7 @@ variable "product" {
 
 variable "lambda_execution_roles" {
   type        = list(string)
-  description = "List of ARNS of the lambdas that need to subscribe the SQS queue created by this module"
+  description = "List of ARNS of the lambdas execution roles that need to subscribe the SQS queue created by this module. The role can be in any AWS account."
 }
 
 variable "sqs_visibility_timeout" {
@@ -49,13 +49,17 @@ variable "stream_name" {
   type        = string
   description = "The kinesis stream to attach to"
 }
+
 variable "process_record_lambda_arn" {
   type        = string
-  description = "The lambda arn that will be used process the records on the SQS queue"
+  default = ""
+  description = "Optional lambda arn that will be used process the records on the SQS queue, this can only be used for lambdas that exist in the same AWS account. When supplying this variable the name of the lambda will also need to be included."
 }
+
 variable "process_record_lambda_name" {
   type        = string
-  description = "The lambda name that will be used process the records on the SQS queue"
+  default = ""
+  description = "Optional lambda name that will be used process the records on the SQS queue, this can only be used for lambdas that exist in the same AWS account. When supplying this variable the arn of the lambda will also need to be included."
 }
 
 variable "sqs_event_filtering_path" {
