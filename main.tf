@@ -75,4 +75,5 @@ module "event_sources" {
   sqs_event_filtering_path       = var.sqs_event_filtering_path
   process_record_lambda_arn      = var.process_record_lambda_arn
   process_record_lambda_name     = var.process_record_lambda_name
+  is_lambda_local = var.is_lambda_local
 }
