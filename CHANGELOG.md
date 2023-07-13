@@ -1,3 +1,10 @@
+## [1.16.4](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.16.3...v1.16.4) (2023-07-13)
+
+
+### Bug Fixes
+
+* add bool value for lambda_event_sources to prevent count depends on error ([d2b8f97](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/commits/d2b8f97be194df262f7fca7e924b9409699b6d65))
+
 ## [1.16.3](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.16.2...v1.16.3) (2023-07-05)
 
 
