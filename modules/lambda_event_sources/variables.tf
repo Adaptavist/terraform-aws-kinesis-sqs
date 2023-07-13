@@ -36,3 +36,8 @@ variable "process_record_lambda_name" {
   description = "Optional lambda name that will be used process the records on the SQS queue, this can only be used for lambdas that exist in the same AWS account. When supplying this variable the arn of the lambda will also need to be included."
 }
 
+variable "is_lambda_local" {
+  type = bool
+  description = "Do the attached lambdas reside in the same aws account as the rest of the stack"
+  default = true
+}

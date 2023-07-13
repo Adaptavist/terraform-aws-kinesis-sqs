@@ -68,3 +68,4 @@ The consumer supplied lambda is at number 10.
 | tags | Tags to be added to the created resources | `map(string)` | n/a | yes |
 | vpc\_id | Id of the VPC attached to the lambda, if in use | `string` | `null` | no |
 | vpc\_subnet\_ids | List of subnet IDs associated with the VPC, if in use | `list(string)` | `null` | no |
+| is\_lambda\_local | Boolean value to determine if the attached lambdas are local to the rest of the stack | `bool` | `true` | no |

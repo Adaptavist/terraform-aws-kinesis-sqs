@@ -128,3 +128,10 @@ variable "slack_sns_arn" {
   default     = null
 }
 
+variable "is_lambda_local" {
+  type = bool
+  description = "Do the attached lambdas reside in the same aws account as the rest of the stack"
+  default = true
+}
+
+
