@@ -100,7 +100,9 @@ def send_to_sqs(data: dict, message_body: str) -> None:
 
     if data_primary_key:
         try:
-            groupId = str(data[data_primary_key])
+            # Call the extract_keys function to get the value for groupId from the data
+            extract_value = extract_keys(data, data_primary_key.split(','))
+            groupId = str(extract_value)
         except Exception as e:
             raise Exception(f'Problem occurred with data_primary_key: {e}')
     else:

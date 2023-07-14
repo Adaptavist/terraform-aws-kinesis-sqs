@@ -12,29 +12,44 @@ logger.info('Loading function')
 class TestRecordProcessing(unittest.TestCase):
     def setUp(self):
         self.input_record = {
-            'type': 'create',
-            'email': 'example@example.com',
-            'first_name': 'FN',
-            'last_name': 'LN',
-            'sent_timestamp': '2023-06-08T07:56:04+00:00',
-            'account_create_timestamp': '2023-06-08T07:56:04.316+00:00'
-        }
-        self.keys = ['type']
-        self.key_str= 'type'
-        self.key_to_hash = 'create'
+            "path": "/data-extraction/path",
+            "payload": {
+                "path": "/data-extraction",
+                "payload": {
+                "type": "message",
+                "id": "2410081",
+                "href": "/messages/2410081",
+                "view_href": "https:",
+                "author": {
+                    "type": "user",
+                    "id": "2467514",
+                    "href": "/users/2467514",
+                    "view_href": "https:",
+                    "login": "baguss"
+                }
+                }
+            }
+            }
+        self.keys = 'path'
+        self.keys_list = 'payload,payload,id'
+        self.key_to_hash = "/data-extraction/path"
         self.hash_one = hashlib.md5(self.key_to_hash.encode()).hexdigest()
         self.hash_none = hashlib.md5(json.dumps(self.input_record, sort_keys=True).encode()).hexdigest()
     
     def test_extract_keys(self):
-        extract = extract_keys(self.input_record, self.keys)
-        assert extract == 'create'
+        extract = extract_keys(self.input_record, self.keys.split(','))
+        assert extract == "/data-extraction/path"
+    
+    def test_extract_keys_list(self):
+        extract = extract_keys(self.input_record, self.keys_list.split(','))
+        assert extract == "2410081"
     
     def test_extract_keys_none(self):
         extract = extract_keys(data=self.input_record)
         assert extract == 'No key provided'
     
     def test_create_hash_key(self):
-        hash = create_hash_key(self.input_record,self.key_str)
+        hash = create_hash_key(self.input_record,self.keys)
         assert hash == self.hash_one
 
     def test_create_hash_key_none(self):
