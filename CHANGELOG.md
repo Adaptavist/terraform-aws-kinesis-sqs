@@ -1,3 +1,10 @@
+## [1.16.5](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.16.4...v1.16.5) (2023-07-17)
+
+
+### Bug Fixes
+
+* update function calls, add tests for multi key input ([a1209db](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/commits/a1209dbfc499f76121bac0fe0043921802330093))
+
 ## [1.16.4](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.16.3...v1.16.4) (2023-07-13)
 
 
