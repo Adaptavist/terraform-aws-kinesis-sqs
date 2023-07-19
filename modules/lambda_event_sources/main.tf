@@ -16,7 +16,7 @@ resource "aws_lambda_event_source_mapping" "kinesis_source_mapping" {
     content {
       filter {
         pattern = jsonencode({
-          data : { path : [var.sqs_event_filtering_path] }
+          data : { path : [{"prefix": var.sqs_event_filtering_path}] }
         })
       }
     }
