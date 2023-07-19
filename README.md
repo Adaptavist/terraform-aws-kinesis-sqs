@@ -59,7 +59,7 @@ The consumer supplied lambda is at number 10.
 | redis\_security\_group\_id | The security group id associated with the redis cluster | `string` | `null` | no |
 | region | The region used, used for naming global resources like IAM roles | `string` | n/a | yes |
 | slack\_sns\_arn | ARN of SNS topic to be used for alarms, alarms are trigger when messages end up on DQL | `string` | `null` | no |
-| sqs\_event\_filtering\_path | The path to use to filter records off the kinesis stream, useful when dynamic endpoints have been used and only a subset of the records is required. | `string` | `null` | no |
+| sqs\_event\_filtering\_path | The path to use to filter records off the kinesis stream, useful when dynamic endpoints have been used and only a subset of the records is required. This uses a prefix to replicate a wildcard like filter | `string` | `null` | no |
 | sqs\_queue\_name\_override | SQS queue name override, used when migrating from older stacks as naming convention may not have been consistent | `string` | `""` | no |
 | sqs\_visibility\_timeout | The SQS visibility timeout in seconds | `number` | `60` | no |
 | stage | Name stage of the development. e.g prod | `string` | n/a | yes |
