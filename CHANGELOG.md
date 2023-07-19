@@ -1,3 +1,10 @@
+# [1.17.0](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.16.5...v1.17.0) (2023-07-19)
+
+
+### Features
+
+* update readme and filtering ([e989248](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/commits/e98924845f62479df6bbca84dd27100e92a4c814))
+
 ## [1.16.5](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.16.4...v1.16.5) (2023-07-17)
 
 
