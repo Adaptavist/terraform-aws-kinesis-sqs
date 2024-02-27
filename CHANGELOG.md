@@ -1,3 +1,10 @@
+# [1.18.0](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.17.0...v1.18.0) (2024-02-27)
+
+
+### Features
+
+* adding cross region support ([cc4b6b4](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/commits/cc4b6b46eff9fd871a66b2ab3ce26aaa460c97c1))
+
 # [1.17.0](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.16.5...v1.17.0) (2023-07-19)
 
 
