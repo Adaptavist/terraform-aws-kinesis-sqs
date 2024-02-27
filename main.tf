@@ -16,7 +16,7 @@ module "add_record_to_sqs" {
   kms_key_arn_list       = [module.records_sqs.kms_key_arn]
   namespace              = var.product
   sqs_write_arn_list     = [module.records_sqs.queue_arn]
-  kinesis_read_arn_list  = [data.aws_kinesis_stream.kinesis_stream.arn]
+  kinesis_read_arn_list  = [var.stream_arn]
   stage                  = var.stage
   tags                   = local.tags
   slack_sns_arn          = var.slack_sns_arn
@@ -66,7 +66,7 @@ module "event_sources" {
 
   source = "./modules/lambda_event_sources"
 
-  kinesis_arn                    = data.aws_kinesis_stream.kinesis_stream.arn
+  kinesis_arn                    = var.stream_arn
   kinesis_processing_lambda_arn  = module.add_record_to_sqs.lambda_arn
   sqs_processing_lambda_arn      = var.process_record_lambda_arn
   sqs_queue_arn                  = module.records_sqs.queue_arn

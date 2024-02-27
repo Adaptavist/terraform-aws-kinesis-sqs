@@ -45,7 +45,7 @@ variable "stage_type" {
   description = "The type of the stage. e.g production  "
 }
 
-variable "stream_name" {
+variable "stream_arn" {
   type        = string
   description = "The kinesis stream to attach to"
 }
@@ -133,5 +133,3 @@ variable "is_lambda_local" {
   description = "Do the attached lambdas reside in the same aws account as the rest of the stack"
   default = true
 }
-
-
