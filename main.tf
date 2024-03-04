@@ -1,5 +1,10 @@
 module "records_sqs" {
+  providers = {
+    aws = aws.sqs
+  }
+
   source                 = "./modules/fifo_sqs"
+
   dlq_max_receive_count  = 10
   queue_name             = coalesce(var.sqs_queue_name_override, "${var.product}-${var.record_type}")
   tags                   = local.tags
@@ -9,7 +14,12 @@ module "records_sqs" {
 }
 
 module "add_record_to_sqs" {
+  providers = {
+    aws = aws.kinesis
+  }
+
   source                 = "./modules/lambda"
+
   code_dir               = "${path.module}/add_record_to_sqs"
   description            = "A lambda that takes a record from kinesis and pushes it onto a SQS FIFO queue"
   function_name          = coalesce(var.lambda_function_name_override, "add_${var.product}_${var.record_type}_record_to_sqs")
@@ -31,14 +41,16 @@ module "add_record_to_sqs" {
     HOST             = var.cluster_id != null ? data.aws_elasticache_cluster.redis_cluster[0].cache_nodes[0].address : null
   }
 
-  region         = var.region
+  region         = data.aws_region.kinesis_region.name
   vpc_subnet_ids = var.vpc_id != null ? values(data.aws_subnet.private_subnets)[*].id : []
   vpc_id         = var.vpc_id
 }
 
 # Set the inbound rules for the security group, required for redis interaction
 resource "aws_security_group_rule" "redis_security_group_rule" {
+  provider                 = aws.kinesis
   count                    = var.cluster_id != null ? 1 : 0
+
   type                     = "ingress"
   from_port                = 6379
   to_port                  = 6379
@@ -63,6 +75,9 @@ locals {
 
 
 module "event_sources" {
+  providers = {
+    aws = aws.kinesis
+  }
 
   source = "./modules/lambda_event_sources"
 
@@ -75,5 +90,5 @@ module "event_sources" {
   sqs_event_filtering_path       = var.sqs_event_filtering_path
   process_record_lambda_arn      = var.process_record_lambda_arn
   process_record_lambda_name     = var.process_record_lambda_name
-  is_lambda_local = var.is_lambda_local
+  is_lambda_local                = var.is_lambda_local
 }
