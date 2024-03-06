@@ -37,7 +37,7 @@ variable "process_record_lambda_name" {
 }
 
 variable "is_lambda_local" {
-  type = bool
+  type        = bool
   description = "Do the attached lambdas reside in the same aws account as the rest of the stack"
-  default = true
+  default     = true
 }

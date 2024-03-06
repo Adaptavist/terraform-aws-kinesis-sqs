@@ -137,13 +137,13 @@ data "aws_iam_policy_document" "kms_policy" {
   dynamic "statement" {
     for_each = length(var.lambda_execution_roles) > 0 ? [1] : []
     content {
-      sid     = "lambda_decrypt_access"
-      effect  = "Allow"
+      sid    = "lambda_decrypt_access"
+      effect = "Allow"
       actions = [
         "kms:Decrypt",
         "kms:ReEncrypt*",
         "kms:GenerateDataKey*",
-        "kms:DescribeKey"]
+      "kms:DescribeKey"]
 
       principals {
         type        = "AWS"

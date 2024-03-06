@@ -41,6 +41,43 @@ See the above diagram. This module creates the resources numbered 9 and 8.
 
 The consumer supplied lambda is at number 10. 
 
+## Providers
+
+| Name | Version |
+|------|---------|
+| aws.kinesis | n/a |
+| aws.sqs | n/a |
+
+Two provider aliases must be passed to this module:
+- `aws.kinesis` - this should be configured in the same region as the source kinesis stream
+- `aws.sqs` - this should be configured in the region you want SQS resources to be created.
+
+The SNS topic specified in the `slack_sns_arn` variable must be in the same region as the `aws.kinesis` provider 	
+
+Example config:
+
+```
+provider "aws" {
+    region = "us-west-2"
+    alias  = "usw2"
+}
+
+provider "aws" {
+    region = "us-east-1"
+    alias  = "use1"
+}
+
+module "kinesis_to_sqs" {
+    providers = {
+        aws.sqs     = aws.usw2
+        aws.kinesis = aws.use1
+    }
+
+    source = "Adaptavist/kinesis-sqs/aws"
+    ...
+}
+```
+
 ## Inputs
 
 | Name                             | Description | Type | Default | Required |
@@ -49,6 +86,7 @@ The consumer supplied lambda is at number 10.
 | cluster\_id                      | The ID / name of the Redis cluster, if in use | `string` | `null` | no |
 | data\_primary\_key               | The primary data key, this is used as the group id of the underlying SQS FIFO queue | `string` | `null` | no |
 | enable\_cloudwatch\_logs         | Should cloudwatch logs be enabled for the lambda modules | `bool` | `true` | no |
+| is\_lambda\_local                | Do the attached lambdas reside in the same aws account as the rest of the stack | `bool` | `true` | no |
 | lambda\_execution\_roles         | List of ARNS of the lambdas execution roles that need to subscribe the SQS queue created by this module. The role can be in any AWS account. | `list(string)` | n/a | yes |
 | lambda\_function\_name\_override | Lambda function name override, used when migrating from older stacks as naming convention may not have been consistent | `string` | `""` | no |
 | process\_record\_lambda\_arn     | Optional lambda arn that will be used process the records on the SQS queue, this can only be used for lambdas that exist in the same AWS account. When supplying this variable the name of the lambda will also need to be included. | `string` | `""` | no |
@@ -57,9 +95,8 @@ The consumer supplied lambda is at number 10.
 | record\_type                     | The record type, used for naming resources | `string` | n/a | yes |
 | redis\_hash\_key                 | The key used to extract a value from the data and create a distinct record on | `string` | `null` | no |
 | redis\_security\_group\_id       | The security group id associated with the redis cluster | `string` | `null` | no |
-| region                           | The region used, used for naming global resources like IAM roles | `string` | n/a | yes |
 | slack\_sns\_arn                  | ARN of SNS topic to be used for alarms, alarms are trigger when messages end up on DQL | `string` | `null` | no |
-| sqs\_event\_filtering\_path      | The path to use to filter records off the kinesis stream, useful when dynamic endpoints have been used and only a subset of the records is required. This uses a prefix to replicate a wildcard like filter | `string` | `null` | no |
+| sqs\_event\_filtering\_path      | The path to use to filter records off the kinesis stream, useful when dynamic endpoints have been used and only a subset of the records is required. | `string` | `null` | no |
 | sqs\_queue\_name\_override       | SQS queue name override, used when migrating from older stacks as naming convention may not have been consistent | `string` | `""` | no |
 | sqs\_visibility\_timeout         | The SQS visibility timeout in seconds | `number` | `60` | no |
 | stage                            | Name stage of the development. e.g prod | `string` | n/a | yes |
@@ -68,4 +105,11 @@ The consumer supplied lambda is at number 10.
 | tags                             | Tags to be added to the created resources | `map(string)` | n/a | yes |
 | vpc\_id                          | Id of the VPC attached to the lambda, if in use | `string` | `null` | no |
 | vpc\_subnet\_ids                 | List of subnet IDs associated with the VPC, if in use | `list(string)` | `null` | no |
-| is\_lambda\_local                | Boolean value to determine if the attached lambdas are local to the rest of the stack | `bool` | `true` | no |
+
+## Outputs
+
+| Name                        | Description |
+|-----------------------------|-------------|
+| kms\_key\_arn               | n/a |
+| lambda\_security\_group\_id | n/a |
+| sqs\_queue\_arn             | n/a |
