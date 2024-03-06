@@ -1,3 +1,10 @@
+## [1.18.1](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.18.0...v1.18.1) (2024-03-06)
+
+
+### Bug Fixes
+
+* allowing sqs to be created in a different region to kinesis stream ([abdd3db](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/commits/abdd3db92ae2c6b98114a67735ef12a26794d0ab))
+
 # [1.18.0](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.17.0...v1.18.0) (2024-02-27)
 
 
