@@ -1,0 +1,20 @@
+{
+  "Records": [
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "194829479",
+        "sequenceNumber": "49648563117866444155676483995081046669165641483195252738",
+        "data": "eyJwYXRoIjoiL2h1YnNwb3QtY29uc3VtZXIvZXZlbnRzL3NhbGFibGUiLCJwYXlsb2FkIjp7ImV2ZW50X3R5cGUiOiJDcmVhdGVfQWNjb3VudCIsIm9yZ2FuaXphdGlvbiI6eyJBY2NvdW50IElkIjoib3JnXzJkeFdJRkpEdlZIT0w1SDdzbk5kRjVVZ3NlWCIsIkFwcCBOYW1lIjoiU2FsYWJsZSIsIk5hbWUiOiJsZ2xhemVicm9vaytoYWNrZXJAYWRhcHRhdmlzdC5jb20ncyBPcmdhbml6YXRpb24iLCJBY2NvdW50IFNsdWciOiJsZ2xhemVicm9vay1oYWNrZXItYWRhcHRhdmlzdC1jb20tcy1vcmdhbml6YXRpb24tMTcxMDk1MDEyNyIsIlN0YXJ0IERhdGUiOjE3MTA5NTAxMjcxNTAsIlN0YXR1cyI6IkFDVElWRSIsIlRpZXIiOiJzdGFuZGFyZCIsIkNvbXBhbnkgRG9tYWluIjoibGdsYXplYnJvb2sraGFja2VyQGFkYXB0YXZpc3QuY29tIiwiUHJpbWFyeSBFbWFpbCI6ImxnbGF6ZWJyb29rK2hhY2tlckBhZGFwdGF2aXN0LmNvbSIsIkJpbGxpbmcgQ29udGFjdCI6ImxnbGF6ZWJyb29rK2hhY2tlckBhZGFwdGF2aXN0LmNvbSIsIlRlY2huaWNhbCBDb250YWN0IjoibGdsYXplYnJvb2sraGFja2VyQGFkYXB0YXZpc3QuY29tIiwiQmlsbGluZyBQZXJpb2QiOiJNb250aGx5IiwidXNlcnMiOlt7ImVtYWlsIjoibGdsYXplYnJvb2sraGFja2VyQGFkYXB0YXZpc3QuY29tIiwiZmlyc3RuYW1lIjoiSm9obiIsImxhc3RuYW1lIjoiRG9lIiwicm9sZSI6ImFkbWluIiwiY3JlYXRlZEF0IjoxNzEwOTUwMTI1MDQ1fV19fSwiYXJyaXZhbFRpbWVFcG9jaE1pbGxpIjoxNzEwOTUwMTMwMTk1LCJoZWFkZXJzIjp7IkFjY2VwdCI6WyIqLyoiXSwiWC1Gb3J3YXJkZWQtUHJvdG8iOlsiaHR0cHMiXSwiVXNlci1BZ2VudCI6WyJub2RlLWZldGNoLzEuMCAoK2h0dHBzOi8vZ2l0aHViLmNvbS9iaXRpbm4vbm9kZS1mZXRjaCkiXSwiWC1Gb3J3YXJkZWQtRm9yIjpbIjEwLjEwLjEyLjE4OSJdLCJIb3N0IjpbImRpZy5ib3Jvbi5jcnV4LnBsYXRmb3JtLmFkYXB0YXZpc3QuY29tIl0sIkFjY2VwdC1FbmNvZGluZyI6WyJnemlwLGRlZmxhdGUiXSwiWC1Gb3J3YXJkZWQtUG9ydCI6WyI0NDMiXSwiWC1BbXpuLVRyYWNlLUlkIjpbIlJvb3Q9MS02NWZiMDZmMi0yMTMzMTMyNzUxMzBiZWRiNzhmY2M2MDEiXSwiQ29udGVudC1UeXBlIjpbImFwcGxpY2F0aW9uL2pzb24iXX19",
+        "approximateArrivalTimestamp": 1710950130.322
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49648563117866444155676483995081046669165641483195252738",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::476416174193:role/add_app_record_app_record_record_to_sqs",
+      "awsRegion": "us-west-2",
+      "eventSourceARN": "arn:aws:kinesis:us-west-2:476416174193:stream/ingest-hubspot-consumer-events"
+    }
+  ]
+}
