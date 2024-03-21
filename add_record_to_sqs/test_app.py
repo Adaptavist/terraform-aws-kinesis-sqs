@@ -13,21 +13,25 @@ class TestRecordProcessing(unittest.TestCase):
     def setUp(self):
         self.input_record = {
             "path": "/data-extraction/path",
+            "first_none": None,
             "payload": {
                 "path": "/data-extraction",
+                "second_none": None,
                 "payload": {
+                "third_none": None,
                 "type": "message",
                 "id": "2410081",
                 "href": "/messages/2410081",
                 "view_href": "https:",
                 "author": {
                     "type": "user",
+                    "fourth_none": None,
                     "id": "2467514",
                     "href": "/users/2467514",
                     "view_href": "https:",
                     "login": "baguss"
                 }
-                }
+              }
             }
             }
         self.keys = 'path'
@@ -55,6 +59,14 @@ class TestRecordProcessing(unittest.TestCase):
     def test_create_hash_key_none(self):
         hash = create_hash_key(data=self.input_record)
         assert hash == self.hash_none
+    
+    def test_replace_nonce_values(self):
+        data = replace_none_values(data=self.input_record)
+        assert data['first_none'] == ''
+        assert data['payload']['second_none'] == ''
+        assert data['payload']['payload']['third_none'] == ''
+        assert data['payload']['payload']['author']['fourth_none'] == ''
+
 
 def extract_keys(data:dict, keys: list = None) -> str:
     """
@@ -104,6 +116,25 @@ def create_hash_key(data:dict, key: str = None) -> str:
         logger.fatal(f'Problem occurred create_hash_key: {e} terminating the process')
         sys.exit(1)
     return hash_key
+
+def replace_none_values(data: dict) -> dict:
+    """
+    Recursively replace None values from a dictionary.
+
+    Parameters:
+        data (dict): The dictionary to process.
+
+    Returns:
+        A new dictionary with None values removed.
+    """
+    for key, value in list(data.items()):
+        if value is None:
+            data[key] = ''
+        elif isinstance(value, dict):
+            # Recurse into nested dictionaries
+            replace_none_values(value) 
+    return data
+
 
 if __name__ == '__main__':
     unittest.main()

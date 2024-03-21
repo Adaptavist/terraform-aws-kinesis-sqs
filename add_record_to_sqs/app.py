@@ -61,7 +61,7 @@ def lambda_handler(event: dict, context) -> None:
                 if data.get('path') == path_value_filter:
                     send_to_redis = True
             else:
-                # No path_value_filter, all data to go via Redis
+                # No path_value_filter + redis connection -> all data to go via Redis
                 send_to_redis = True
             
             if send_to_redis:
@@ -182,12 +182,18 @@ def create_hash_key(data:dict, key: str = None) -> str:
 
 def replace_none_values(data: dict) -> dict:
     """
-    Replace None values in data with empty strings.
+    Recursively replace None values from a dictionary.
 
     Parameters:
-        data (dict): The data to remove none values from
+        data (dict): The dictionary to process.
 
     Returns:
-        A dictionary containing the cleaned data
+        A new dictionary with None values removed.
     """
-    return {key: ('' if value is None else value) for key, value in data.items()}
+    for key, value in list(data.items()):
+        if value is None:
+            data[key] = ''
+        elif isinstance(value, dict):
+            # Recurse into nested dictionaries
+            replace_none_values(value) 
+    return data
