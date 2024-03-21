@@ -17,7 +17,7 @@ data_primary_key = os.environ.get('DATA_PRIMARY_KEY', '')
 redis_key = os.environ.get('REDIS_HASH_KEY', '')
 host=os.environ.get('HOST','')
 redis = Redis(host=host, port=6379)
-path_value_filter = os.environ.get('PATH_KEY','')
+path_value_filter = os.environ.get('PATH_VALUE_FILTER','')
 # =============================================================
 # =============SET LOGGING=====================================
 logger = logging.getLogger()
@@ -61,7 +61,7 @@ def lambda_handler(event: dict, context) -> None:
                 if data.get('path') == path_value_filter:
                     send_to_redis = True
             else:
-                # No path_value_filter is set, all data to go via Redis
+                # No path_value_filter, all data to go via Redis
                 send_to_redis = True
             
             if send_to_redis:

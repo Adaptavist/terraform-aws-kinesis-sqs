@@ -128,3 +128,9 @@ variable "is_lambda_local" {
   description = "Do the attached lambdas reside in the same aws account as the rest of the stack"
   default     = true
 }
+
+variable "path_value_filter" {
+  type        = string
+  description = "The path of the data to filter specific records to Redis"
+  default     = null
+}

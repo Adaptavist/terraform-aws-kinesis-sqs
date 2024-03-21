@@ -39,6 +39,7 @@ module "add_record_to_sqs" {
     DATA_PRIMARY_KEY = var.data_primary_key
     REDIS_HASH_KEY   = var.redis_hash_key
     HOST             = var.cluster_id != null ? data.aws_elasticache_cluster.redis_cluster[0].cache_nodes[0].address : null
+    PATH_VALUE_FILTER = var.path_value_filter
   }
 
   region         = data.aws_region.kinesis_region.name
