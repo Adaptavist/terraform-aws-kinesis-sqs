@@ -43,22 +43,34 @@ def lambda_handler(event: dict, context) -> None:
         dataBase64 = record['kinesis']['data']
         dataJson = base64.b64decode(dataBase64)
         data = json.loads(dataJson)
-      
-        # if a redis connection has been set then process data accordingly
+
+        '''
+        The below enables multiple consumers to optionally leverage Redis based on configuration 
+        and specific record attributes.
+        
+        If just the Redis connection is set, send all records via Redis calling replace_none_values
+    
+        If path_value_filter is set, only records matching the path_value_filter should be sent to Redis 
+        calling replace_none_values, others should be sent directly to SQS
+        '''
+
         if redis.connection_pool.connection_kwargs['host']:
-            # redis doesn't like null values so replace them with empty strings
-            data = replace_none_values(data)
-            '''
-            Filter records by path, allowing for multiple consumers
-            to use Redis optionally
-            '''
-            if path_value_filter and data.get('path') != path_value_filter:
-                send_to_sqs(data=data, message_body=json.dumps(data))
+            send_to_redis = False
+
+            if path_value_filter:
+                if data.get('path') == path_value_filter:
+                    send_to_redis = True
             else:
+                # No path_value_filter is set, all data to go via Redis
+                send_to_redis = True
+            
+            if send_to_redis:
+                data = replace_none_values(data)
                 data_to_redis_to_sqs(payload=data)
+            else:
+                send_to_sqs(data=data, message_body=json.dumps(data))
         else:
             send_to_sqs(data=data, message_body=json.dumps(data))
-    
 
 
 def data_to_redis_to_sqs(payload: dict) -> None:
