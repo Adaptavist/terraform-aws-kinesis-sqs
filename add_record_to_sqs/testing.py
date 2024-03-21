@@ -10,14 +10,24 @@ import uuid
 
 data_primary_key = os.environ.get('DATA_PRIMARY_KEY', '')
 redis_key = os.environ.get('REDIS_HASH_KEY', '')
-path_value_filter = os.environ.get('PATH_KEY','/hubspot-consumer/events/talentlms')
+path_value_filter = os.environ.get('PATH_KEY','/hubspot-consumer/events/salable')
 host=os.environ.get('HOST','host')
 redis = Redis(host=host, port=6379)
 
-# If connection set use redis
-# if key set use that to hash on, if no key take the entire record
 
-# if a conncetion is set and a path filter just the path records go to redis
+
+def replace_none_values(data: dict) -> dict:
+    """
+    Replace None values in data with empty strings.
+
+    Parameters:
+        data (dict): The data to remove none values from
+
+    Returns:
+        A dictionary containing the cleaned data
+    """
+    return {key: ('' if value is None else value) for key, value in data.items()}
+
 def lambda_handler_two(event: dict) -> None:
     """
         Handles the event from the kinesis stream
@@ -27,26 +37,25 @@ def lambda_handler_two(event: dict) -> None:
             context: LambdaContext
     """
     
-    print(event)
-    
+    has_redis_connection = redis.connection_pool.connection_kwargs['host']
+    # print(event)
+   
     for record in event['Records']:
         dataBase64 = record['kinesis']['data']
         dataJson = base64.b64decode(dataBase64)
         data = json.loads(dataJson)
         print(data['path'])
 
-        # if a redis connection has been set then process data accordingly
-        # if 
-        if path_value_filter and redis.connection_pool.connection_kwargs['host']:
-            # just send certain records to redis
-            if data['path'] == path_value_filter: 
-                # redis doesn't like null values so replace them with empty strings
-                for key, value in data.items():
-                    if value is None:
-                        data[key] = ''
-
-            # send data to redis
-            print('send to redis')
+        if has_redis_connection:
+            data = replace_none_values(data)
+        
+        if has_redis_connection:
+            # If path_value_filter is set, decide based on the path
+            if path_value_filter:
+                if data.get('path') and data.get('path') != path_value_filter:
+                    print('send to sqs')
+                else:
+                 print('send to redis')
         else:
             print('send to sqs')
 

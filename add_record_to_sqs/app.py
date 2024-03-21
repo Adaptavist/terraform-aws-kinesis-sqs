@@ -17,6 +17,7 @@ data_primary_key = os.environ.get('DATA_PRIMARY_KEY', '')
 redis_key = os.environ.get('REDIS_HASH_KEY', '')
 host=os.environ.get('HOST','')
 redis = Redis(host=host, port=6379)
+path_value_filter = os.environ.get('PATH_KEY','')
 # =============================================================
 # =============SET LOGGING=====================================
 logger = logging.getLogger()
@@ -46,12 +47,15 @@ def lambda_handler(event: dict, context) -> None:
         # if a redis connection has been set then process data accordingly
         if redis.connection_pool.connection_kwargs['host']:
             # redis doesn't like null values so replace them with empty strings
-            for key, value in data.items():
-                if value is None:
-                    data[key] = ''
-
-            # send data to redis
-            data_to_redis_to_sqs(payload=data)
+            data = replace_none_values(data)
+            '''
+            Filter records by path, allowing for multiple consumers
+            to use Redis optionally
+            '''
+            if path_value_filter and data.get('path') != path_value_filter:
+                send_to_sqs(data=data, message_body=json.dumps(data))
+            else:
+                data_to_redis_to_sqs(payload=data)
         else:
             send_to_sqs(data=data, message_body=json.dumps(data))
     
@@ -163,3 +167,15 @@ def create_hash_key(data:dict, key: str = None) -> str:
         logger.fatal(f'Problem occurred create_hash_key: {e} terminating the process')
         sys.exit(1)
     return hash_key
+
+def replace_none_values(data: dict) -> dict:
+    """
+    Replace None values in data with empty strings.
+
+    Parameters:
+        data (dict): The data to remove none values from
+
+    Returns:
+        A dictionary containing the cleaned data
+    """
+    return {key: ('' if value is None else value) for key, value in data.items()}
