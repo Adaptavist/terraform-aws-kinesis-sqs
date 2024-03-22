@@ -119,7 +119,13 @@ variable "enable_cloudwatch_logs" {
 
 variable "slack_sns_arn" {
   type        = string
-  description = "ARN of SNS topic to be used for alarms, alarms are trigger when messages end up on DQL"
+  description = "ARN of SNS topic to be used for alarms, alarms are triggered by lambda errors. SNS topic must be in same region as aws.kinesis provider alias"
+  default     = null
+}
+
+variable "slack_sns_arn_sqs" {
+  type        = string
+  description = "ARN of SNS topic to be used for alarms if SQS is in a different region, alarms are triggered when messages end up on DLQ. SNS topic must be in same region as aws.sqs provider alias"
   default     = null
 }
 
