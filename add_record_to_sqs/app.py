@@ -17,6 +17,7 @@ data_primary_key = os.environ.get('DATA_PRIMARY_KEY', '')
 redis_key = os.environ.get('REDIS_HASH_KEY', '')
 host=os.environ.get('HOST','')
 redis = Redis(host=host, port=6379)
+path_value_filter = os.environ.get('PATH_VALUE_FILTER','')
 # =============================================================
 # =============SET LOGGING=====================================
 logger = logging.getLogger()
@@ -42,19 +43,34 @@ def lambda_handler(event: dict, context) -> None:
         dataBase64 = record['kinesis']['data']
         dataJson = base64.b64decode(dataBase64)
         data = json.loads(dataJson)
-      
-        # if a redis connection has been set then process data accordingly
-        if redis.connection_pool.connection_kwargs['host']:
-            # redis doesn't like null values so replace them with empty strings
-            for key, value in data.items():
-                if value is None:
-                    data[key] = ''
 
-            # send data to redis
-            data_to_redis_to_sqs(payload=data)
+        '''
+        The below enables multiple consumers to optionally leverage Redis based on configuration 
+        and specific record attributes.
+        
+        If just the Redis connection is set, send all records via Redis calling replace_none_values
+    
+        If path_value_filter is set, only records matching the path_value_filter should be sent to Redis 
+        calling replace_none_values, others should be sent directly to SQS
+        '''
+
+        if redis.connection_pool.connection_kwargs['host']:
+            send_to_redis = False
+
+            if path_value_filter:
+                if data.get('path') == path_value_filter:
+                    send_to_redis = True
+            else:
+                # No path_value_filter + redis connection -> all data to go via Redis
+                send_to_redis = True
+            
+            if send_to_redis:
+                data = replace_none_values(data)
+                data_to_redis_to_sqs(payload=data)
+            else:
+                send_to_sqs(data=data, message_body=json.dumps(data))
         else:
             send_to_sqs(data=data, message_body=json.dumps(data))
-    
 
 
 def data_to_redis_to_sqs(payload: dict) -> None:
@@ -163,3 +179,21 @@ def create_hash_key(data:dict, key: str = None) -> str:
         logger.fatal(f'Problem occurred create_hash_key: {e} terminating the process')
         sys.exit(1)
     return hash_key
+
+def replace_none_values(data: dict) -> dict:
+    """
+    Recursively replace None values from a dictionary.
+
+    Parameters:
+        data (dict): The dictionary to process.
+
+    Returns:
+        A new dictionary with None values removed.
+    """
+    for key, value in list(data.items()):
+        if value is None:
+            data[key] = ''
+        elif isinstance(value, dict):
+            # Recurse into nested dictionaries
+            replace_none_values(value) 
+    return data
