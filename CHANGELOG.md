@@ -1,3 +1,10 @@
+# [1.19.0](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.18.1...v1.19.0) (2024-03-22)
+
+
+### Features
+
+* update module to allow path filtering ([7a204c2](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/commits/7a204c23eec89cb1c5708dd24048bfa852b62f22))
+
 ## [1.18.1](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.18.0...v1.18.1) (2024-03-06)
 
 
