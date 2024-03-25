@@ -8,7 +8,7 @@ module "records_sqs" {
   dlq_max_receive_count  = 10
   queue_name             = coalesce(var.sqs_queue_name_override, "${var.product}-${var.record_type}")
   tags                   = local.tags
-  slack_sns_arn          = var.slack_sns_arn
+  slack_sns_arn          = local.is_multi_region ? var.slack_sns_arn_sqs : var.slack_sns_arn
   sqs_visibility_timeout = var.sqs_visibility_timeout
   lambda_execution_roles = var.lambda_execution_roles
 }
@@ -72,6 +72,9 @@ locals {
     "Avst:Project"      = "data-highway"
     "Avst:Team"         = "cloud-infra"
   }
+
+  is_multi_region = data.aws_region.kinesis_region.name != data.aws_region.sqs_region.name ? true : false
+
 }
 
 
