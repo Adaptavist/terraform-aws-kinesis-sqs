@@ -1,3 +1,10 @@
+## [1.19.1](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.19.0...v1.19.1) (2024-03-25)
+
+
+### Bug Fixes
+
+* allow second slack sns arn to be passed if sqs is in a different region ([66f02f2](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/commits/66f02f2c9706f27be5d0f455799607384ecda7f7))
+
 # [1.19.0](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.18.1...v1.19.0) (2024-03-22)
 
 
