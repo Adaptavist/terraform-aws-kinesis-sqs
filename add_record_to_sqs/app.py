@@ -201,6 +201,5 @@ def replace_none_values(data: dict) -> dict:
             data[key] = ''
         elif isinstance(value, dict):
             # Recurse into nested dictionaries
-               # Recurse into nested dictionaries
             replace_none_values(value)
     return data
