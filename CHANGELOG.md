@@ -1,3 +1,10 @@
+## [1.19.2](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.19.1...v1.19.2) (2024-04-09)
+
+
+### Bug Fixes
+
+* add explicit sqs region ([920c8f3](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/commits/920c8f3df778431492e304d9e3e4e3ec705e2f60))
+
 ## [1.19.1](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.19.0...v1.19.1) (2024-03-25)
 
 
