@@ -1,3 +1,10 @@
+## [1.19.3](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.19.2...v1.19.3) (2024-04-12)
+
+
+### Bug Fixes
+
+* SQS_REGION lambda environment variable ([64b7cfa](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/commits/64b7cfa2962c83e74569e8c3b0bbabba47f460d2))
+
 ## [1.19.2](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.19.1...v1.19.2) (2024-04-09)
 
 
