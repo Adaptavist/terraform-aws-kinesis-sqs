@@ -34,7 +34,7 @@ module "add_record_to_sqs" {
   product                = var.product
 
   environment_variables = {
-    SQS_REGION       = data.aws_region.sqs_region
+    SQS_REGION       = data.aws_region.sqs_region.name
     SQS_QUEUE_URL    = module.records_sqs.queue_url
     IS_FIFO_QUEUE    = "true",
     DATA_PRIMARY_KEY = var.data_primary_key
