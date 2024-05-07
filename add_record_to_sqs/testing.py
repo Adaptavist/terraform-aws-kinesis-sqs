@@ -1,6 +1,7 @@
 import os
 import logging
 import boto3
+from boto3.config import Config
 import base64
 import json
 from redis import Redis
@@ -132,6 +133,9 @@ def lambda_handler(event: dict, context) -> None:
             sqs.data_to_redis_to_sqs(payload=data)
         else:
             sqs.send_to_sqs(data=data, message_body=json.dumps(data))
+
+
+
 
 
 def extract_keys(data:dict, keys: list|None = None) -> str:
