@@ -1,7 +1,6 @@
 import os
 import logging
 import boto3
-from boto3.config import Config
 import base64
 import json
 from redis import Redis
@@ -203,3 +202,6 @@ def replace_none_values(data: dict) -> dict:
             # Recurse into nested dictionaries
             replace_none_values(value)
     return data
+
+
+config = [{"path:1", "primary_key:2", "hash_key:2"},{"path:2", "primary_key:3", "hash_key:3"},]
