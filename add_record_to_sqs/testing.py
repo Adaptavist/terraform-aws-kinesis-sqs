@@ -7,6 +7,8 @@ from redis import Redis
 import hashlib
 import sys
 import uuid
+from dotenv import load_dotenv
+load_dotenv()
 
 # =============SET ENVIRONMENT VARIABLES=======================
 SQS_REGION = os.environ.get('SQS_REGION')
@@ -204,4 +206,25 @@ def replace_none_values(data: dict) -> dict:
     return data
 
 
-config = [{"path:1", "primary_key:2", "hash_key:2"},{"path:2", "primary_key:3", "hash_key:3"},]
+config_str = os.getenv('CONFIG')
+
+
+
+ # Parse the JSON string back into a Python list
+if config_str:
+    config = json.loads(config_str)
+else:
+    config = []
+
+# Now you can work with the `config` list
+print(type(config))
+
+
+'''
+So what we want to do is condense the below into one map/array config.
+This will allow for mutliple path filters and keys to be assigned
+
+'''
+# DATA_PRIMARY_KEY = var.data_primary_key
+# REDIS_HASH_KEY   = var.redis_hash_key
+# PATH_VALUE_FILTER = var.path_value_filter
