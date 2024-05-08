@@ -15,11 +15,19 @@ SQS_REGION = os.environ.get('SQS_REGION')
 QUEUE_URL = os.environ.get('SQS_QUEUE_URL')
 IS_FIFO_QUEUE = os.environ.get('IS_FIFO_QUEUE')
 # ==============================================================
-DATA_PRIMARY_KEY = os.environ.get('DATA_PRIMARY_KEY', '')
-REDIS_KEY = os.environ.get('REDIS_HASH_KEY', '')
-HOST = os.environ.get('HOST','')
+# DATA_PRIMARY_KEY = os.environ.get('DATA_PRIMARY_KEY', '')
+# REDIS_KEY = os.environ.get('REDIS_HASH_KEY', '')
+HOST = os.environ.get('HOST','some-url')
 PORT=6379
 PATH_VALUE_FILTER = os.environ.get('PATH_VALUE_FILTER','')
+# =============================================================
+# ===TEST CONFIG VALUE=========================================
+config_str = os.getenv('CONFIG')
+ # Parse the JSON string back into a Python list
+if config_str:
+    config = json.loads(config_str)
+else:
+    config = []
 # =============================================================
 # =============SET LOGGING=====================================
 logger = logging.getLogger()
@@ -38,17 +46,18 @@ class SqsUtils:
         self._client = boto3.client('sqs')
         self._redis = Redis(host=HOST, port=PORT)
 
-    def data_to_redis_to_sqs(self, payload: dict) -> None:
+    def data_to_redis_to_sqs(self, payload: dict, config: dict = None) -> None:
         """
             Takes in the processed data from the lambda_handler,
             creates a unique hash key of the record which determines whether it
             should be added to the Redis cluster and then sent to the SQS queue
         
-            Parameters:
+            Parameters: 
                 payload (dict): The record to be sent
         """
-
+        REDIS_KEY = config["redis_hash_key"] 
         hash_key = create_hash_key(data=payload, key=REDIS_KEY)
+        print(f'hash_key created {hash_key}')
         try:
             if self._redis.hsetnx('records', hash_key, json.dumps(payload)):
                 logger.info("New record with hash key '%s' added to hash 'records'", hash_key)
@@ -62,7 +71,7 @@ class SqsUtils:
         except Exception as e:
             logger.info('Problem sending data to the redis cluster / SQS %s', e)
 
-    def send_to_sqs(self, data: dict, message_body: str) -> None:
+    def send_to_sqs(self, data: dict, message_body: str, config: dict = None) -> None:
         """
             Takes the data proccessed from the lambda_handler and sends it to the SQS queue
         
@@ -71,7 +80,7 @@ class SqsUtils:
                 message_body (str): Contents of the payload
                 data_base_64: 
         """
-
+        DATA_PRIMARY_KEY = config["data_primary_key"]
         # If redis is used take a UUID else use a HASH
         if self._redis.connection_pool.connection_kwargs['host']:
             message_deduplication_id = str(uuid.uuid4())
@@ -85,17 +94,19 @@ class SqsUtils:
             try:
                 # Call the extract_keys function to get the value for groupId from the data
                 extract_value = extract_keys(data, DATA_PRIMARY_KEY.split(','))
+                print(f'extract_value: {extract_value}')
                 group_id = str(extract_value)
             except Exception as e:
                 raise Exception(f'Problem occurred with data_primary_key: {e}')
         else:
             group_id = message_deduplication_id
 
-        self._client.send_message(
-                QueueUrl=QUEUE_URL,
-                MessageBody=message_body,
-                MessageDeduplicationId=message_deduplication_id,
-                MessageGroupId=group_id)
+        print(f'sending to sqs: {message_body}')
+        # self._client.send_message(
+        #         QueueUrl=QUEUE_URL,
+        #         MessageBody=message_body,
+        #         MessageDeduplicationId=message_deduplication_id,
+        #         MessageGroupId=group_id)
 
     def redis_host(self):
         """returns the hostname of redis"""
@@ -129,14 +140,15 @@ def lambda_handler(event: dict, context) -> None:
         calling replace_none_values, others should be sent directly to SQS
         '''
 
-        if sqs.redis_host() and (data.get('path') == PATH_VALUE_FILTER or PATH_VALUE_FILTER == ""):
-            data = replace_none_values(data)
-            sqs.data_to_redis_to_sqs(payload=data)
-        else:
-            sqs.send_to_sqs(data=data, message_body=json.dumps(data))
-
-
-
+        # Iterate through each config to find a matching path_value_filter
+        for cfg in config:
+            if sqs.redis_host() and (data.get('path') == cfg["path_value_filter"] or cfg["path_value_filter"] == ""):
+                print('1: replace_none_values')
+                data = replace_none_values(data)
+                print('2: data_to_redis_to_sqs')
+                sqs.data_to_redis_to_sqs(payload=data, config=cfg)
+            else:
+                print('1: send_to_sqs')
 
 
 def extract_keys(data:dict, keys: list|None = None) -> str:
@@ -204,27 +216,3 @@ def replace_none_values(data: dict) -> dict:
             # Recurse into nested dictionaries
             replace_none_values(value)
     return data
-
-
-config_str = os.getenv('CONFIG')
-
-
-
- # Parse the JSON string back into a Python list
-if config_str:
-    config = json.loads(config_str)
-else:
-    config = []
-
-# Now you can work with the `config` list
-print(type(config))
-
-
-'''
-So what we want to do is condense the below into one map/array config.
-This will allow for mutliple path filters and keys to be assigned
-
-'''
-# DATA_PRIMARY_KEY = var.data_primary_key
-# REDIS_HASH_KEY   = var.redis_hash_key
-# PATH_VALUE_FILTER = var.path_value_filter
