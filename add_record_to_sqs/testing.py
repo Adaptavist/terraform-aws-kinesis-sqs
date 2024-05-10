@@ -3,7 +3,7 @@ import logging
 import boto3
 import base64
 import json
-from redis import Redis
+# from redis import Redis
 import hashlib
 import sys
 import uuid
@@ -15,8 +15,6 @@ SQS_REGION = os.environ.get('SQS_REGION')
 QUEUE_URL = os.environ.get('SQS_QUEUE_URL')
 IS_FIFO_QUEUE = os.environ.get('IS_FIFO_QUEUE')
 # ==============================================================
-# DATA_PRIMARY_KEY = os.environ.get('DATA_PRIMARY_KEY', '')
-# REDIS_KEY = os.environ.get('REDIS_HASH_KEY', '')
 HOST = os.environ.get('HOST','some-url')
 PORT=6379
 PATH_VALUE_FILTER = os.environ.get('PATH_VALUE_FILTER','')
@@ -44,7 +42,7 @@ class SqsUtils:
     def __init__(self):
         boto3.setup_default_session(region_name=SQS_REGION)
         self._client = boto3.client('sqs')
-        self._redis = Redis(host=HOST, port=PORT)
+        # self._redis = Redis(host=HOST, port=PORT)
 
     def data_to_redis_to_sqs(self, payload: dict, config: dict = None) -> None:
         """
@@ -58,18 +56,18 @@ class SqsUtils:
         REDIS_KEY = config["redis_hash_key"] 
         hash_key = create_hash_key(data=payload, key=REDIS_KEY)
         print(f'hash_key created {hash_key}')
-        try:
-            if self._redis.hsetnx('records', hash_key, json.dumps(payload)):
-                logger.info("New record with hash key '%s' added to hash 'records'", hash_key)
-                logger.info('Sending %s to SQS', payload)
+        # try:
+        #     if self._redis.hsetnx('records', hash_key, json.dumps(payload)):
+        #         logger.info("New record with hash key '%s' added to hash 'records'", hash_key)
+        #         logger.info('Sending %s to SQS', payload)
 
-                # Send record to SQS queue
-                message_body = json.dumps(payload)
-                self.send_to_sqs(payload, message_body)
-            else:
-                logger.info("Record with hash key '%s' already exists in hash 'records'", hash_key)
-        except Exception as e:
-            logger.info('Problem sending data to the redis cluster / SQS %s', e)
+        #         # Send record to SQS queue
+        #         message_body = json.dumps(payload)
+        #         self.send_to_sqs(payload, message_body)
+        #     else:
+        #         logger.info("Record with hash key '%s' already exists in hash 'records'", hash_key)
+        # except Exception as e:
+        #     logger.info('Problem sending data to the redis cluster / SQS %s', e)
 
     def send_to_sqs(self, data: dict, message_body: str, config: dict = None) -> None:
         """
@@ -82,7 +80,7 @@ class SqsUtils:
         """
         DATA_PRIMARY_KEY = config["data_primary_key"]
         # If redis is used take a UUID else use a HASH
-        if self._redis.connection_pool.connection_kwargs['host']:
+        if HOST:
             message_deduplication_id = str(uuid.uuid4())
         else:
             # Generate the hash-based MessageDeduplicationId
@@ -108,12 +106,12 @@ class SqsUtils:
         #         MessageDeduplicationId=message_deduplication_id,
         #         MessageGroupId=group_id)
 
-    def redis_host(self):
-        """returns the hostname of redis"""
-        return self._redis.connection_pool.connection_kwargs['host']
+    # def redis_host(self):
+    #     """returns the hostname of redis"""
+    #     return self._redis.connection_pool.connection_kwargs['host']
 
 
-def lambda_handler(event: dict, context) -> None:
+def lambda_handler(event: dict) -> None:
     """
         Handles the event from the kinesis stream
 
@@ -122,13 +120,15 @@ def lambda_handler(event: dict, context) -> None:
             context: LambdaContext
     """
 
-    logger.info(event)
+    # logger.info(event)
     sqs = SqsUtils()
 
     for record in event['Records']:
         data_base_64 = record['kinesis']['data']
         data_json = base64.b64decode(data_base_64)
         data = json.loads(data_json)
+        print('processing data')
+        # print(data)
 
         '''
         The below enables multiple consumers to optionally leverage Redis based on configuration 
@@ -142,10 +142,10 @@ def lambda_handler(event: dict, context) -> None:
 
         # Iterate through each config to find a matching path_value_filter
         for cfg in config:
-            if sqs.redis_host() and (data.get('path') == cfg["path_value_filter"] or cfg["path_value_filter"] == ""):
+            if HOST and (data.get('path') == cfg["path_value_filter"] or cfg["path_value_filter"] == ""):
                 print('1: replace_none_values')
                 data = replace_none_values(data)
-                print('2: data_to_redis_to_sqs')
+                # print(f'2: data_to_redis_to_sqs.. {data}')
                 sqs.data_to_redis_to_sqs(payload=data, config=cfg)
             else:
                 print('1: send_to_sqs')
@@ -163,18 +163,24 @@ def extract_keys(data:dict, keys: list|None = None) -> str:
     Returns:
         The value of the key provided
     """
+    print(f'calling extract_keys, working with keys {keys}')
     try:
         if keys is not None:
             extract = data
+            # print(f'got extract {extract}')
             for key in keys:
+                print(f'looping key {key}')
                 if key in extract:
+                    print(f'found key: {key}')
                     extract = extract[key]
+                    print(f'extract: {extract}')
                 else:
-                    return str(extract)
+                    break       
         else:
             return 'No key provided'
     except Exception as e:
         logger.error(f'Problem occurred extract_keys: {e}')
+    return str(extract)
 
 def create_hash_key(data:dict, key: str|None = None) -> str:
     """
@@ -187,10 +193,12 @@ def create_hash_key(data:dict, key: str|None = None) -> str:
     Returns:
         A hash key to define a distinct record to send to redis
     """
+    print(f'calling create_hash_key, working with... {data}')
     try:
         if key is not None:
             redis_hash_key = key.split(",")
             new_key = extract_keys(data, redis_hash_key)
+            print(f'got new_key: {new_key}')
             hash_key = hashlib.md5(new_key.encode()).hexdigest()
         else:
             hash_key = hashlib.md5(json.dumps(data, sort_keys=True).encode()).hexdigest()
@@ -216,3 +224,8 @@ def replace_none_values(data: dict) -> dict:
             # Recurse into nested dictionaries
             replace_none_values(value)
     return data
+
+
+event = json.load(open('test-kinesis.json', 'r'))
+
+lambda_handler(event=event)
