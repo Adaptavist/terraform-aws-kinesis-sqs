@@ -26,6 +26,7 @@ if config_str:
     config = json.loads(config_str)
 else:
     config = []
+print(config)
 # =============================================================
 # =============SET LOGGING=====================================
 logger = logging.getLogger()
@@ -53,8 +54,8 @@ class SqsUtils:
             Parameters: 
                 payload (dict): The record to be sent
         """
-        REDIS_KEY = config["redis_hash_key"] 
-        hash_key = create_hash_key(data=payload, key=REDIS_KEY)
+        REDIS_KEY = config["redis_hash_keys"] 
+        hash_key = create_hash_key(data=payload, keys=REDIS_KEY)
         print(f'hash_key created {hash_key}')
         # try:
         #     if self._redis.hsetnx('records', hash_key, json.dumps(payload)):
@@ -151,38 +152,54 @@ def lambda_handler(event: dict) -> None:
                 print('1: send_to_sqs')
 
 
-def extract_keys(data:dict, keys: list|None = None) -> str:
+def extract_keys(data: dict, keys: list | None = None) -> str:
     """
-    Takes in a dict object and a key list.
-    Loops through the data extracting the specified key
+    Takes in a dict object and a list of composite keys.
+    Loops through the data extracting the specified key values and concatenates them.
 
     Parameters:
         data (dict): The data to be iterated over
-        keys (list): List of keys to get required value from data (optional)
+        keys (list): List of composite keys to get required values from data (optional)
 
     Returns:
-        The value of the key provided
+        The concatenated value of the composite keys provided
     """
     print(f'calling extract_keys, working with keys {keys}')
+    extracted_values = []
     try:
         if keys is not None:
-            extract = data
-            # print(f'got extract {extract}')
-            for key in keys:
-                print(f'looping key {key}')
-                if key in extract:
-                    print(f'found key: {key}')
-                    extract = extract[key]
-                    print(f'extract: {extract}')
-                else:
-                    break       
+            for full_key in keys:
+                # Split each key by the comma to handle composite keys
+                subkeys = full_key.split(',')
+                extract = data
+                for key in subkeys:
+                    if key in extract:
+                        print(f'found key: {key}')
+                        extract = extract[key]
+                    else:
+                        # If any key in the sequence does not exist, break and move to the next full_key
+                        extract = None
+                        break
+                if extract is not None:
+                    extracted_values.append(str(extract))
         else:
             return 'No key provided'
     except Exception as e:
-        logger.error(f'Problem occurred extract_keys: {e}')
-    return str(extract)
+        logger.fatal(f'Problem occurred extract_keys: {e} terminating the process')
+        sys.exit(1)
+    return ''.join(extracted_values)
 
-def create_hash_key(data:dict, key: str|None = None) -> str:
+# # Example usage:
+# data = {
+#     "payload": {
+#         "id": "123",
+#         "email": "example@example.com"
+#     }
+# }
+# keys = ['payload,id', 'payload,email']
+# print(extract_keys(data, keys))
+
+def create_hash_key(data:dict, keys: list | None = None) -> str:
     """
     Takes a specified key from the env vars. Returns a hash based on either this key or the entire record
 
@@ -195,9 +212,8 @@ def create_hash_key(data:dict, key: str|None = None) -> str:
     """
     print(f'calling create_hash_key, working with... {data}')
     try:
-        if key is not None:
-            redis_hash_key = key.split(",")
-            new_key = extract_keys(data, redis_hash_key)
+        if keys is not None:
+            new_key = extract_keys(data, keys)
             print(f'got new_key: {new_key}')
             hash_key = hashlib.md5(new_key.encode()).hexdigest()
         else:
@@ -226,6 +242,6 @@ def replace_none_values(data: dict) -> dict:
     return data
 
 
-event = json.load(open('test-kinesis.json', 'r'))
+event = json.load(open('test-kinesis-three.json', 'r'))
 
 lambda_handler(event=event)
