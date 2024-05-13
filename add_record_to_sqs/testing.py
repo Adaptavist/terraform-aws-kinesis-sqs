@@ -20,13 +20,13 @@ PORT=6379
 PATH_VALUE_FILTER = os.environ.get('PATH_VALUE_FILTER','')
 # =============================================================
 # ===TEST CONFIG VALUE=========================================
-config_str = os.getenv('CONFIG')
+CONFIG_STR = os.getenv('CONFIG')
  # Parse the JSON string back into a Python list
-if config_str:
-    config = json.loads(config_str)
+if CONFIG_STR:
+    CONFIG = json.loads(CONFIG_STR)
 else:
-    config = []
-print(config)
+    CONFIG = []
+print(CONFIG)
 # =============================================================
 # =============SET LOGGING=====================================
 logger = logging.getLogger()
@@ -45,7 +45,7 @@ class SqsUtils:
         self._client = boto3.client('sqs')
         # self._redis = Redis(host=HOST, port=PORT)
 
-    def data_to_redis_to_sqs(self, payload: dict, config: dict = None) -> None:
+    def data_to_redis_to_sqs(self, payload: dict, config: dict) -> None:
         """
             Takes in the processed data from the lambda_handler,
             creates a unique hash key of the record which determines whether it
@@ -54,7 +54,7 @@ class SqsUtils:
             Parameters: 
                 payload (dict): The record to be sent
         """
-        REDIS_KEY = config["redis_hash_keys"] 
+        REDIS_KEY = config.get('redis_hash_keys', '') 
         hash_key = create_hash_key(data=payload, keys=REDIS_KEY)
         print(f'hash_key created {hash_key}')
         # try:
@@ -70,7 +70,7 @@ class SqsUtils:
         # except Exception as e:
         #     logger.info('Problem sending data to the redis cluster / SQS %s', e)
 
-    def send_to_sqs(self, data: dict, message_body: str, config: dict = None) -> None:
+    def send_to_sqs(self, data: dict, message_body: str, config: dict) -> None:
         """
             Takes the data proccessed from the lambda_handler and sends it to the SQS queue
         
@@ -79,7 +79,7 @@ class SqsUtils:
                 message_body (str): Contents of the payload
                 data_base_64: 
         """
-        DATA_PRIMARY_KEY = config["data_primary_key"]
+        DATA_PRIMARY_KEY = config.get('data_primary_key','')
         # If redis is used take a UUID else use a HASH
         if HOST:
             message_deduplication_id = str(uuid.uuid4())
@@ -132,7 +132,7 @@ def lambda_handler(event: dict) -> None:
         # print(data)
 
         '''
-        The below enables multiple consumers to optionally leverage Redis based on configuration 
+        The below enables multiple consumers to optionally leverage Redis based on CONFIGuration 
         and specific record attributes.
         
         If just the Redis connection is set, send all records via Redis calling replace_none_values
@@ -141,8 +141,8 @@ def lambda_handler(event: dict) -> None:
         calling replace_none_values, others should be sent directly to SQS
         '''
 
-        # Iterate through each config to find a matching path_value_filter
-        for cfg in config:
+        # Iterate through each CONFIG to find a matching path_value_filter
+        for cfg in CONFIG:
             if HOST and (data.get('path') == cfg["path_value_filter"] or cfg["path_value_filter"] == ""):
                 print('1: replace_none_values')
                 data = replace_none_values(data)

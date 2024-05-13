@@ -13,16 +13,19 @@ SQS_REGION = os.environ.get('SQS_REGION')
 QUEUE_URL = os.environ.get('SQS_QUEUE_URL')
 IS_FIFO_QUEUE = os.environ.get('IS_FIFO_QUEUE')
 # ==============================================================
-DATA_PRIMARY_KEY = os.environ.get('DATA_PRIMARY_KEY', '')
-REDIS_KEY = os.environ.get('REDIS_HASH_KEY', '')
 HOST = os.environ.get('HOST','')
 PORT=6379
-PATH_VALUE_FILTER = os.environ.get('PATH_VALUE_FILTER','')
+CONFIG_STR = os.getenv('CONFIG')
+if CONFIG_STR:
+    CONFIG = json.loads(CONFIG_STR)
+else:
+    CONFIG = []
 # =============================================================
 # =============SET LOGGING=====================================
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 logger.info('Loading function')
+logger.info(f'Working with configuration: {CONFIG}')
 if QUEUE_URL:
     logger.info("Queue url : %s", QUEUE_URL)
 # =============================================================
@@ -36,7 +39,7 @@ class SqsUtils:
         self._client = boto3.client('sqs')
         self._redis = Redis(host=HOST, port=PORT)
 
-    def data_to_redis_to_sqs(self, payload: dict) -> None:
+    def data_to_redis_to_sqs(self, payload: dict, config: dict) -> None:
         """
             Takes in the processed data from the lambda_handler,
             creates a unique hash key of the record which determines whether it
@@ -44,8 +47,10 @@ class SqsUtils:
         
             Parameters:
                 payload (dict): The record to be sent
+                config (dict): The config object containing any env vars set
         """
-
+        
+        REDIS_KEY = config.get('redis_hash_keys', '') 
         hash_key = create_hash_key(data=payload, key=REDIS_KEY)
         try:
             if self._redis.hsetnx('records', hash_key, json.dumps(payload)):
@@ -60,16 +65,17 @@ class SqsUtils:
         except Exception as e:
             logger.info('Problem sending data to the redis cluster / SQS %s', e)
 
-    def send_to_sqs(self, data: dict, message_body: str) -> None:
+    def send_to_sqs(self, data: dict, message_body: str, config: dict) -> None:
         """
             Takes the data proccessed from the lambda_handler and sends it to the SQS queue
         
             Parameters:
                 data (dict): The payload to be sent to SQS
                 message_body (str): Contents of the payload
-                data_base_64: 
+                config (dict): The config object containing any env vars set
         """
-
+        DATA_PRIMARY_KEY = config.get('data_primary_key','')
+        
         # If redis is used take a UUID else use a HASH
         if self._redis.connection_pool.connection_kwargs['host']:
             message_deduplication_id = str(uuid.uuid4())
@@ -126,54 +132,63 @@ def lambda_handler(event: dict, context) -> None:
         If path_value_filter is set, only records matching the path_value_filter should be sent to Redis 
         calling replace_none_values, others should be sent directly to SQS
         '''
-
-        if sqs.redis_host() and (data.get('path') == PATH_VALUE_FILTER or PATH_VALUE_FILTER == ""):
-            data = replace_none_values(data)
-            sqs.data_to_redis_to_sqs(payload=data)
-        else:
-            sqs.send_to_sqs(data=data, message_body=json.dumps(data))
+        for cfg in CONFIG:
+            if sqs.redis_host() and (data.get('path') == cfg["path_value_filter"] or  cfg["path_value_filter"] == ""):
+                data = replace_none_values(data)
+                sqs.data_to_redis_to_sqs(payload=data)
+            else:
+                sqs.send_to_sqs(data=data, message_body=json.dumps(data))
 
 
 def extract_keys(data:dict, keys: list|None = None) -> str:
     """
-    Takes in a dict object and a key list.
-    Loops through the data extracting the specified key
+    Takes in a dict object and a list of composite keys.
+    Loops through the data extracting the specified key values and concatenates them.
 
     Parameters:
         data (dict): The data to be iterated over
-        keys (list): List of keys to get required value from data (optional)
+        keys (list): List of composite keys to get required values from data (optional)
 
     Returns:
-        The value of the key provided
+        The concatenated value of the composite keys provided
     """
+    extracted_values = []
     try:
         if keys is not None:
-            extract = data
-            for key in keys:
-                if key in extract:
-                    extract = extract[key]
-                else:
-                    return str(extract)
+            for full_key in keys:
+                # Split each key by the comma to handle composite keys
+                subkeys = full_key.split(',')
+                extract = data
+                for key in subkeys:
+                    if key in extract:
+                        print(f'found key: {key}')
+                        extract = extract[key]
+                    else:
+                        # If any key in the sequence does not exist, break and move to the next full_key
+                        extract = None
+                        break
+                if extract is not None:
+                    extracted_values.append(str(extract))
         else:
             return 'No key provided'
     except Exception as e:
-        logger.error(f'Problem occurred extract_keys: {e}')
+        logger.error(f'Problem occurred extract_keys: {e} terminating the process')
+    return ''.join(extracted_values)
 
-def create_hash_key(data:dict, key: str|None = None) -> str:
+def create_hash_key(data:dict, keys: list | None = None) -> str:
     """
     Takes a specified key from the env vars. Returns a hash based on either this key or the entire record
 
     Parameters:
         data (dict): The record processed from the kinesis stream
-        key (str): The key to create a hash on (optional)
+        keys (list): The keys to create a hash on (optional)
 
     Returns:
         A hash key to define a distinct record to send to redis
     """
     try:
-        if key is not None:
-            redis_hash_key = key.split(",")
-            new_key = extract_keys(data, redis_hash_key)
+        if keys is not None:
+            new_key = extract_keys(data, keys)
             hash_key = hashlib.md5(new_key.encode()).hexdigest()
         else:
             hash_key = hashlib.md5(json.dumps(data, sort_keys=True).encode()).hexdigest()
