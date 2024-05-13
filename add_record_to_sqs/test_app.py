@@ -2,7 +2,7 @@ import unittest
 import hashlib
 import json
 import logging
-import sys
+from typing import Union
 
 # =============SET LOGGING=====================================
 logger = logging.getLogger()
@@ -68,7 +68,7 @@ class TestRecordProcessing(unittest.TestCase):
         assert data['payload']['payload']['author']['fourth_none'] == ''
 
 
-def extract_keys(data:dict, keys: list|None = None) -> str:
+def extract_keys(data:dict, keys: Union[list, None] = None) -> str:
     """
     Takes in a dict object and a list of composite keys.
     Loops through the data extracting the specified key values and concatenates them.
@@ -102,7 +102,7 @@ def extract_keys(data:dict, keys: list|None = None) -> str:
         logger.error(f'Problem occurred extract_keys: {e}')
     return ''.join(extracted_values) 
 
-def create_hash_key(data:dict, keys: list | None = None) -> str:
+def create_hash_key(data: dict, keys: Union[list, None] = None) -> str:
     """
     Takes a specified key from the env vars. Returns a hash based on either this key or the entire record
 
