@@ -68,53 +68,60 @@ class TestRecordProcessing(unittest.TestCase):
         assert data['payload']['payload']['author']['fourth_none'] == ''
 
 
-def extract_keys(data:dict, keys: list = None) -> str:
+def extract_keys(data:dict, keys: list|None = None) -> str:
     """
-    Takes in a dict object and a key list.
-    Loops through the data extracting the specified key
+    Takes in a dict object and a list of composite keys.
+    Loops through the data extracting the specified key values and concatenates them.
 
     Parameters:
         data (dict): The data to be iterated over
-        keys (list): List of keys to get required value from data (optional)
+        keys (list): List of composite keys to get required values from data (optional)
 
     Returns:
-        The value of the key provided
+        The concatenated value of the composite keys provided
     """
+    extracted_values = []
     try:
         if keys is not None:
-            extract = data
-            for key in keys:
-                if key in extract:
-                    extract = extract[key]
-                else:
-                    break 
+            for full_key in keys:
+                # Split each key by the comma to handle composite keys
+                subkeys = full_key.split(',')
+                extract = data
+                for key in subkeys:
+                    if key in extract:
+                        print(f'found key: {key}')
+                        extract = extract[key]
+                    else:
+                        # If any key in the sequence does not exist, break and move to the next full_key
+                        extract = None
+                        break
+                if extract is not None:
+                    extracted_values.append(str(extract))
         else:
             return 'No key provided'
     except Exception as e:
         logger.error(f'Problem occurred extract_keys: {e}')
-    return str(extract)  
+    return ''.join(extracted_values) 
 
-def create_hash_key(data:dict, key: str = None) -> str:
+def create_hash_key(data:dict, keys: list | None = None) -> str:
     """
     Takes a specified key from the env vars. Returns a hash based on either this key or the entire record
 
     Parameters:
         data (dict): The record processed from the kinesis stream
-        key (str): The key to create a hash on (optional)
+        keys (list): The keys to create a hash on (optional)
 
     Returns:
         A hash key to define a distinct record to send to redis
     """
     try:
-        if key is not None:
-            redis_hash_key = key.split(",")
-            new_key = extract_keys(data, redis_hash_key)
+        if keys is not None:
+            new_key = extract_keys(data, keys)
             hash_key = hashlib.md5(new_key.encode()).hexdigest()
         else:
             hash_key = hashlib.md5(json.dumps(data, sort_keys=True).encode()).hexdigest()
     except Exception as e:
-        logger.fatal(f'Problem occurred create_hash_key: {e} terminating the process')
-        sys.exit(1)
+        logger.error(f'Problem occurred create_hash_key: {e}')
     return hash_key
 
 def replace_none_values(data: dict) -> dict:
