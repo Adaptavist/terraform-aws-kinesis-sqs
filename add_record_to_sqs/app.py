@@ -12,7 +12,6 @@ import uuid
 SQS_REGION = os.environ.get('SQS_REGION')
 QUEUE_URL = os.environ.get('SQS_QUEUE_URL')
 IS_FIFO_QUEUE = os.environ.get('IS_FIFO_QUEUE')
-# ==============================================================
 HOST = os.environ.get('HOST','')
 PORT=6379
 CONFIG_STR = os.getenv('CONFIG', '')
@@ -91,7 +90,8 @@ class SqsUtils:
                 extract_value = extract_keys(data, DATA_PRIMARY_KEY.split(','))
                 group_id = str(extract_value)
             except Exception as e:
-                raise Exception(f'Problem occurred with data_primary_key: {e}')
+                logger.error(f'Problem occurred with data_primary_key: {e} terminating the process')
+                sys.exit(1)
         else:
             group_id = message_deduplication_id
 
