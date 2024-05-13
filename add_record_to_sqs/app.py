@@ -173,6 +173,7 @@ def extract_keys(data:dict, keys: list|None = None) -> str:
             return 'No key provided'
     except Exception as e:
         logger.error(f'Problem occurred extract_keys: {e} terminating the process')
+        sys.exit(1)
     return ''.join(extracted_values)
 
 def create_hash_key(data:dict, keys: list | None = None) -> str:
@@ -193,7 +194,7 @@ def create_hash_key(data:dict, keys: list | None = None) -> str:
         else:
             hash_key = hashlib.md5(json.dumps(data, sort_keys=True).encode()).hexdigest()
     except Exception as e:
-        logger.fatal(f'Problem occurred create_hash_key: {e} terminating the process')
+        logger.error(f'Problem occurred create_hash_key: {e} terminating the process')
         sys.exit(1)
     return hash_key
 
