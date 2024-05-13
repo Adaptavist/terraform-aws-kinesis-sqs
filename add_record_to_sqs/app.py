@@ -15,7 +15,7 @@ IS_FIFO_QUEUE = os.environ.get('IS_FIFO_QUEUE')
 # ==============================================================
 HOST = os.environ.get('HOST','')
 PORT=6379
-CONFIG_STR = os.getenv('CONFIG')
+CONFIG_STR = os.getenv('CONFIG', '')
 if CONFIG_STR:
     CONFIG = json.loads(CONFIG_STR)
 else:
@@ -63,7 +63,7 @@ class SqsUtils:
             else:
                 logger.info("Record with hash key '%s' already exists in hash 'records'", hash_key)
         except Exception as e:
-            logger.info('Problem sending data to the redis cluster / SQS %s', e)
+            logger.error('Problem sending data to the redis cluster / SQS %s', e)
 
     def send_to_sqs(self, data: dict, message_body: str, config: dict) -> None:
         """
