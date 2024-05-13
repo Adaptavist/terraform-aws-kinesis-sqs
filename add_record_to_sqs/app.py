@@ -161,7 +161,6 @@ def extract_keys(data:dict, keys: list|None = None) -> str:
                 extract = data
                 for key in subkeys:
                     if key in extract:
-                        print(f'found key: {key}')
                         extract = extract[key]
                     else:
                         # If any key in the sequence does not exist, break and move to the next full_key

@@ -189,15 +189,15 @@ def extract_keys(data: dict, keys: list | None = None) -> str:
         sys.exit(1)
     return ''.join(extracted_values)
 
-# # Example usage:
-# data = {
-#     "payload": {
-#         "id": "123",
-#         "email": "example@example.com"
-#     }
-# }
-# keys = ['payload,id', 'payload,email']
-# print(extract_keys(data, keys))
+# Example usage:
+data = {
+    "payload": {
+        "id": "123",
+        "email": "example@example.com"
+    }
+}
+keys = ['payload,id', 'payload,email']
+print(extract_keys(data, keys))
 
 def create_hash_key(data:dict, keys: list | None = None) -> str:
     """
@@ -242,6 +242,6 @@ def replace_none_values(data: dict) -> dict:
     return data
 
 
-event = json.load(open('test-kinesis-three.json', 'r'))
+# event = json.load(open('test-kinesis-three.json', 'r'))
 
-lambda_handler(event=event)
+# lambda_handler(event=event)
