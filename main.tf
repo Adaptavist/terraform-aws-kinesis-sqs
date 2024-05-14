@@ -37,10 +37,8 @@ module "add_record_to_sqs" {
     SQS_REGION       = data.aws_region.sqs_region.name
     SQS_QUEUE_URL    = module.records_sqs.queue_url
     IS_FIFO_QUEUE    = "true",
-    DATA_PRIMARY_KEY = var.data_primary_key
-    REDIS_HASH_KEY   = var.redis_hash_key
+    CONFIG           = jsonencode((var.config))
     HOST             = var.cluster_id != null ? data.aws_elasticache_cluster.redis_cluster[0].cache_nodes[0].address : null
-    PATH_VALUE_FILTER = var.path_value_filter
   }
 
   region         = data.aws_region.kinesis_region.name

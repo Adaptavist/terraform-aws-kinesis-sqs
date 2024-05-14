@@ -24,11 +24,6 @@ variable "record_type" {
   description = "The record type, used for naming resources"
 }
 
-variable "data_primary_key" {
-  type        = string
-  default     = null
-  description = "The primary data key, this is used as the group id of the underlying SQS FIFO queue"
-}
 
 variable "tags" {
   type        = map(string)
@@ -87,12 +82,6 @@ variable "availability_zones" {
   description = "List of availability zones if in use"
 }
 
-variable "redis_hash_key" {
-  type        = string
-  description = "The key used to extract a value from the data and create a distinct record on"
-  default     = null
-}
-
 variable "redis_security_group_id" {
   type        = string
   description = "The security group id associated with the redis cluster"
@@ -135,8 +124,12 @@ variable "is_lambda_local" {
   default     = true
 }
 
-variable "path_value_filter" {
-  type        = string
-  description = "The path of the data to filter specific records to Redis"
-  default     = null
+variable "config" {
+  description = "Provides a list of environment variables to pass to the lambda, which determine how the data should be filtered"
+  type = list(object({
+    path_value_filter = string
+    data_primary_key  = string
+    redis_hash_keys   = list(string)
+  }))
+  default = []
 }
