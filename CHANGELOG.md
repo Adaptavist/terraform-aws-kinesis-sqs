@@ -1,3 +1,10 @@
+# [1.21.0](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.20.0...v1.21.0) (2024-05-14)
+
+
+### Features
+
+* trigger release ([fdfe031](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/commits/fdfe031af968ea18847a040084e3465a692927d8))
+
 # [1.20.0](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.19.3...v1.20.0) (2024-05-14)
 
 
