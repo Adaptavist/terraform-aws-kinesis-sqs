@@ -1,3 +1,13 @@
+# [1.20.0](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.19.3...v1.20.0) (2024-05-14)
+
+
+### Features
+
+* clean up test files, updating logging ([a085910](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/commits/a085910945aec9122e52776d257cd0d92661de4a))
+* update readme ([097e655](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/commits/097e6557d814d52f8f1c1b18a6761d23f751679e))
+* update tests and final lambda logic ([f977159](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/commits/f9771597ad30392a9b759e6fe1b568bcc9695908))
+* update types ([6669cf4](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/commits/6669cf4b0ecb2e6b0c32bc2ec294310cc97bf83f))
+
 ## [1.19.3](http://bitbucket.org/Adaptavist/module-aws-kinesis-to-sqs/compare/v1.19.2...v1.19.3) (2024-04-12)
 
 
