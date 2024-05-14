@@ -25,7 +25,7 @@ else:
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 logger.info('Loading function')
-logger.info(f'Working with configuration: {CONFIG}')
+logger.info(f'Using configuration: {CONFIG}')
 if QUEUE_URL:
     logger.info("Queue url : %s", QUEUE_URL)
 # =============================================================
