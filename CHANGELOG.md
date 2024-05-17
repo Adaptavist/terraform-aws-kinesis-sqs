@@ -1,3 +1,10 @@
+## [1.21.3](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.21.2...v1.21.3) (2024-05-17)
+
+
+### Bug Fixes
+
+* correct variable name ([2ad71c4](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/commits/2ad71c40a9f5f1fcba132daea9398be0c9f6b295))
+
 ## [1.21.2](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.21.1...v1.21.2) (2024-05-17)
 
 
