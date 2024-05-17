@@ -51,7 +51,7 @@ class SqsUtils:
         """
         
         REDIS_KEY = config.get('redis_hash_keys', '') 
-        hash_key = create_hash_key(data=payload, key=REDIS_KEY)
+        hash_key = create_hash_key(data=payload, keys=REDIS_KEY)
         try:
             if self._redis.hsetnx('records', hash_key, json.dumps(payload)):
                 logger.info("New record with hash key '%s' added to hash 'records'", hash_key)
