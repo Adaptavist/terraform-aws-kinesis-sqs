@@ -15,7 +15,7 @@ QUEUE_URL = os.environ.get('SQS_QUEUE_URL')
 IS_FIFO_QUEUE = os.environ.get('IS_FIFO_QUEUE')
 HOST = os.environ.get('HOST','')
 PORT=6379
-CONFIG_STR = os.environ.getenv('CONFIG', '')
+CONFIG_STR = os.environ.get('CONFIG', '')
 if CONFIG_STR:
     CONFIG = json.loads(CONFIG_STR)
 else:
