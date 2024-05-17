@@ -128,7 +128,6 @@ variable "config" {
   description = "Provides a list of environment variables to pass to the lambda, which determine how the data should be filtered"
   type = list(object({
     path_value_filter = string
-    data_primary_key  = string
     redis_hash_keys   = list(string)
   }))
   default = []

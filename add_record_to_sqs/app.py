@@ -15,7 +15,7 @@ QUEUE_URL = os.environ.get('SQS_QUEUE_URL')
 IS_FIFO_QUEUE = os.environ.get('IS_FIFO_QUEUE')
 HOST = os.environ.get('HOST','')
 PORT=6379
-CONFIG_STR = os.getenv('CONFIG', '')
+CONFIG_STR = os.environ.getenv('CONFIG', '')
 if CONFIG_STR:
     CONFIG = json.loads(CONFIG_STR)
 else:
@@ -65,17 +65,15 @@ class SqsUtils:
         except Exception as e:
             logger.error('Problem sending data to the redis cluster / SQS %s', e)
 
-    def send_to_sqs(self, data: dict, message_body: str, config: dict) -> None:
+    def send_to_sqs(self, data: dict, message_body: str) -> None:
         """
             Takes the data proccessed from the lambda_handler and sends it to the SQS queue
         
             Parameters:
                 data (dict): The payload to be sent to SQS
                 message_body (str): Contents of the payload
-                config (dict): The config object containing any env vars set
         """
-        DATA_PRIMARY_KEY = config.get('data_primary_key','')
-        
+
         # If redis is used take a UUID else use a HASH
         if self._redis.connection_pool.connection_kwargs['host']:
             message_deduplication_id = str(uuid.uuid4())
@@ -85,16 +83,7 @@ class SqsUtils:
                 json.dumps(data, sort_keys=True).encode()
             ).hexdigest()
 
-        if DATA_PRIMARY_KEY:
-            try:
-                # Call the extract_keys function to get the value for groupId from the data
-                extract_value = extract_keys(data, DATA_PRIMARY_KEY.split(','))
-                group_id = str(extract_value)
-            except Exception as e:
-                logger.error(f'Problem occurred with data_primary_key: {e} terminating the process')
-                sys.exit(1)
-        else:
-            group_id = message_deduplication_id
+        group_id = message_deduplication_id
 
         self._client.send_message(
                 QueueUrl=QUEUE_URL,
@@ -133,12 +122,16 @@ def lambda_handler(event: dict, context) -> None:
         If path_value_filter is set, only records matching the path_value_filter should be sent to Redis 
         calling replace_none_values, others should be sent directly to SQS
         '''
+        processed_for_redis = False
+        
         for cfg in CONFIG:
             if sqs.redis_host() and (data.get('path') == cfg["path_value_filter"] or  cfg["path_value_filter"] == ""):
                 data = replace_none_values(data)
-                sqs.data_to_redis_to_sqs(payload=data)
-            else:
-                sqs.send_to_sqs(data=data, message_body=json.dumps(data))
+                sqs.data_to_redis_to_sqs(payload=data, config=cfg)
+                processed_for_redis = True
+        
+        if not processed_for_redis:
+            sqs.send_to_sqs(data=data, message_body=json.dumps(data))
 
 
 def extract_keys(data:dict, keys: Union[list, None] = None) -> str:
