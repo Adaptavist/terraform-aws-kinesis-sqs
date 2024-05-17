@@ -1,3 +1,11 @@
+## [1.21.1](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.21.0...v1.21.1) (2024-05-17)
+
+
+### Bug Fixes
+
+* update function calls, remove data_primary_key ([f2fe168](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/commits/f2fe1688d6daa15ea88482b24731e85a769450b9))
+* update function calls, send-to-sqs, data_to_redis_to_sqs ([437bc0f](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/commits/437bc0fa245bf27b732c11c891d223fe74c20a1d))
+
 # [1.21.0](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.20.0...v1.21.0) (2024-05-14)
 
 
