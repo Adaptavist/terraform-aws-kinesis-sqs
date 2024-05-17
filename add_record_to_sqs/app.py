@@ -136,9 +136,9 @@ def lambda_handler(event: dict, context) -> None:
         for cfg in CONFIG:
             if sqs.redis_host() and (data.get('path') == cfg["path_value_filter"] or  cfg["path_value_filter"] == ""):
                 data = replace_none_values(data)
-                sqs.data_to_redis_to_sqs(payload=data)
+                sqs.data_to_redis_to_sqs(payload=data, config=cfg)
             else:
-                sqs.send_to_sqs(data=data, message_body=json.dumps(data))
+                sqs.send_to_sqs(data=data, message_body=json.dumps(data), config=cfg)
 
 
 def extract_keys(data:dict, keys: Union[list, None] = None) -> str:
