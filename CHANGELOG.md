@@ -1,3 +1,10 @@
+## [1.21.2](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.21.1...v1.21.2) (2024-05-17)
+
+
+### Bug Fixes
+
+* get env var correctly ([c77663a](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/commits/c77663a5ddc79446f0aa1f09d724b10e6262a1f1))
+
 ## [1.21.1](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.21.0...v1.21.1) (2024-05-17)
 
 
