@@ -143,7 +143,8 @@ data "aws_iam_policy_document" "kms_policy" {
         "kms:Decrypt",
         "kms:ReEncrypt*",
         "kms:GenerateDataKey*",
-      "kms:DescribeKey"]
+        "kms:DescribeKey"
+      ]
 
       principals {
         type        = "AWS"
