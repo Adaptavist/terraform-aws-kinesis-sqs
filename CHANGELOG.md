@@ -1,3 +1,10 @@
+## [1.21.4](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.21.3...v1.21.4) (2024-06-05)
+
+
+### Bug Fixes
+
+* sqs kms policy ([9d972bf](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/commits/9d972bf1a7ba2ff0af94302777e132f1b3d2a8f8))
+
 ## [1.21.3](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.21.2...v1.21.3) (2024-05-17)
 
 
