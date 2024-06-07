@@ -3,7 +3,7 @@ module "records_sqs" {
     aws = aws.sqs
   }
 
-  source                 = "./modules/fifo_sqs"
+  source = "./modules/fifo_sqs"
 
   dlq_max_receive_count  = 10
   queue_name             = coalesce(var.sqs_queue_name_override, "${var.product}-${var.record_type}")
@@ -18,7 +18,7 @@ module "add_record_to_sqs" {
     aws = aws.kinesis
   }
 
-  source                 = "./modules/lambda"
+  source = "./modules/lambda"
 
   code_dir               = "${path.module}/add_record_to_sqs"
   description            = "A lambda that takes a record from kinesis and pushes it onto a SQS FIFO queue"
@@ -34,11 +34,11 @@ module "add_record_to_sqs" {
   product                = var.product
 
   environment_variables = {
-    SQS_REGION       = data.aws_region.sqs_region.name
-    SQS_QUEUE_URL    = module.records_sqs.queue_url
-    IS_FIFO_QUEUE    = "true",
-    CONFIG           = jsonencode((var.config))
-    HOST             = var.cluster_id != null ? data.aws_elasticache_cluster.redis_cluster[0].cache_nodes[0].address : null
+    SQS_REGION    = data.aws_region.sqs_region.name
+    SQS_QUEUE_URL = module.records_sqs.queue_url
+    IS_FIFO_QUEUE = "true",
+    CONFIG        = jsonencode((var.config))
+    HOST          = var.cluster_id != null ? data.aws_elasticache_cluster.redis_cluster[0].cache_nodes[0].address : null
   }
 
   region         = data.aws_region.kinesis_region.name
@@ -48,8 +48,8 @@ module "add_record_to_sqs" {
 
 # Set the inbound rules for the security group, required for redis interaction
 resource "aws_security_group_rule" "redis_security_group_rule" {
-  provider                 = aws.kinesis
-  count                    = var.cluster_id != null ? 1 : 0
+  provider = aws.kinesis
+  count    = var.cluster_id != null ? 1 : 0
 
   type                     = "ingress"
   from_port                = 6379
