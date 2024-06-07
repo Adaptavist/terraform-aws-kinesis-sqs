@@ -1,3 +1,10 @@
+## [1.21.5](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.21.4...v1.21.5) (2024-06-07)
+
+
+### Bug Fixes
+
+* adding local aws account permissons to sqs queue ([f4e7071](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/commits/f4e707173ad25e57e8b2698203eca98c05fef4f3))
+
 ## [1.21.4](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.21.3...v1.21.4) (2024-06-05)
 
 
