@@ -1,3 +1,10 @@
+## [1.21.6](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.21.5...v1.21.6) (2024-06-07)
+
+
+### Bug Fixes
+
+* Added brackets. ([cc36b1b](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/commits/cc36b1b580094f3bf1fe2a56a7a9560f8e415a97))
+
 ## [1.21.5](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.21.4...v1.21.5) (2024-06-07)
 
 
