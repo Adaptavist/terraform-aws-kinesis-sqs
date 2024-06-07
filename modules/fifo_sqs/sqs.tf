@@ -85,6 +85,21 @@ data "aws_iam_policy_document" "sqs_policy" {
   }
 
   statement {
+    sid    = "local_aws_account_receive"
+    effect = "Allow"
+    actions = [
+      "sqs:*"
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+    }
+
+    resources = ["*"]
+  }
+
+  statement {
     sid    = "lambda_send_message"
     effect = "Allow"
     actions = [
