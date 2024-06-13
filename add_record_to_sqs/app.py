@@ -126,9 +126,18 @@ def lambda_handler(event: dict, context) -> None:
         
         for cfg in CONFIG:
             if sqs.redis_host() and (data.get('path') == cfg["path_value_filter"] or  cfg["path_value_filter"] == ""):
-                data = replace_none_values(data)
-                sqs.data_to_redis_to_sqs(payload=data, config=cfg)
-                processed_for_redis = True
+                # If payload contains a list we want to ensure each record is processed individually
+                if type(data['payload']) == list:
+                    for record in data['payload']:
+                        logger.info(f'Processing list payload, record: {record}')
+                        data = replace_none_values(record)
+                        sqs.data_to_redis_to_sqs(payload=data, config=cfg)
+                        processed_for_redis = True
+                else:
+                    logger.info(f'Processing dict payload, record: {data["payload"]}')
+                    data = replace_none_values(data)
+                    sqs.data_to_redis_to_sqs(payload=data, config=cfg)
+                    processed_for_redis = True
         
         if not processed_for_redis:
             sqs.send_to_sqs(data=data, message_body=json.dumps(data))
