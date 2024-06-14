@@ -123,12 +123,22 @@ def lambda_handler(event: dict, context) -> None:
         calling replace_none_values, others should be sent directly to SQS
         '''
         processed_for_redis = False
+        payload = data.get('payload')
         
         for cfg in CONFIG:
-            if sqs.redis_host() and (data.get('path') == cfg["path_value_filter"] or  cfg["path_value_filter"] == ""):
-                data = replace_none_values(data)
-                sqs.data_to_redis_to_sqs(payload=data, config=cfg)
-                processed_for_redis = True
+            if sqs.redis_host() and (data.get('path') == cfg["path_value_filter"] or cfg["path_value_filter"] == ""):
+                # If payload contains a list we want to ensure each record is processed individually
+                if isinstance(payload, list):
+                    for record in payload:
+                        logger.info(f'Processing list payload, record: {record}')
+                        data = replace_none_values(record)
+                        sqs.data_to_redis_to_sqs(payload=data, config=cfg)
+                        processed_for_redis = True
+                else:
+                    logger.info(f'Processing non list payload, data: {data}')
+                    data = replace_none_values(data)
+                    sqs.data_to_redis_to_sqs(payload=data, config=cfg)
+                    processed_for_redis = True
         
         if not processed_for_redis:
             sqs.send_to_sqs(data=data, message_body=json.dumps(data))
