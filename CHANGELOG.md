@@ -1,3 +1,11 @@
+# [1.22.0](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.21.6...v1.22.0) (2024-06-14)
+
+
+### Features
+
+* addition for handling list based payloads ([93a7aff](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/commits/93a7affdd2c0be1cf34a9d02463ea8f96337b774))
+* tweak type checking logic ([ba6283b](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/commits/ba6283bc53513b0cb1c1cef0d3625c4653694b3f))
+
 ## [1.21.6](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.21.5...v1.21.6) (2024-06-07)
 
 
