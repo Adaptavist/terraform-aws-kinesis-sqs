@@ -1,3 +1,10 @@
+## [1.22.1](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.22.0...v1.22.1) (2024-06-17)
+
+
+### Bug Fixes
+
+* update record structure for list payloads ([65975af](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/commits/65975af7c65eabf00e2741c56f6e3e0ab82615c8))
+
 # [1.22.0](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.21.6...v1.22.0) (2024-06-14)
 
 
