@@ -124,6 +124,7 @@ def lambda_handler(event: dict, context) -> None:
         '''
         processed_for_redis = False
         payload = data.get('payload')
+        path = data.get('path')
         
         for cfg in CONFIG:
             if sqs.redis_host() and (data.get('path') == cfg["path_value_filter"] or cfg["path_value_filter"] == ""):
@@ -132,7 +133,12 @@ def lambda_handler(event: dict, context) -> None:
                     for record in payload:
                         logger.info(f'Processing list payload, record: {record}')
                         data = replace_none_values(record)
-                        sqs.data_to_redis_to_sqs(payload=data, config=cfg)
+                        '''
+                        Update the record so that the structure aligns with downstream processing,
+                        retaining important metadata such as the path
+                        ''' 
+                        record_structure = {'path':path, 'payload': record }
+                        sqs.data_to_redis_to_sqs(payload=record_structure, config=cfg)
                         processed_for_redis = True
                 else:
                     logger.info(f'Processing non list payload, data: {data}')
