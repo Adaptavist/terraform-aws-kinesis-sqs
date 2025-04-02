@@ -26,7 +26,7 @@ module "add_record_to_sqs" {
   kms_key_arn_list       = [module.records_sqs.kms_key_arn]
   namespace              = var.product
   sqs_write_arn_list     = [module.records_sqs.queue_arn]
-  kinesis_read_arn_list  = [var.stream_arn]
+  kinesis_read_arn_list  = var.stream_arn
   stage                  = var.stage
   tags                   = local.tags
   slack_sns_arn          = var.slack_sns_arn
