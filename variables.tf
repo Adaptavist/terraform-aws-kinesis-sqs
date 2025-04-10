@@ -36,8 +36,8 @@ variable "stage_type" {
 }
 
 variable "stream_arn" {
-  type        = string
-  description = "The kinesis stream to attach to"
+  type        = list(string)
+  description = "The kinesis streams list to attach to"
 }
 
 variable "process_record_lambda_arn" {
