@@ -1,3 +1,10 @@
+## [1.22.2](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.22.1...v1.22.2) (2025-04-10)
+
+
+### Bug Fixes
+
+* Stream is a list. ([36f27c3](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/commits/36f27c387379a8dfdfcabcb66ea4701ee2379b7f))
+
 ## [1.22.1](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.22.0...v1.22.1) (2024-06-17)
 
 
