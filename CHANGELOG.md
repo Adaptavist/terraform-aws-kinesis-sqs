@@ -1,3 +1,11 @@
+## [1.22.3](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.22.2...v1.22.3) (2025-04-24)
+
+
+### Bug Fixes
+
+* change Lambda event source & permission to mutiple kinesis source ([b15c433](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/commits/b15c433275b2e270e1a6c6b8f7e987f059c098fd))
+* Use for_each. ([776767f](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/commits/776767f352915426fe55030ebb9b3ed288b5dfc1))
+
 ## [1.22.2](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.22.1...v1.22.2) (2025-04-10)
 
 
