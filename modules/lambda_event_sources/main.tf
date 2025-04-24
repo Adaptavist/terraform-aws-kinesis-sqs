@@ -6,7 +6,10 @@ resource "aws_lambda_event_source_mapping" "sqs_source_mapping" {
 }
 
 resource "aws_lambda_event_source_mapping" "kinesis_source_mapping" {
-  event_source_arn               = var.kinesis_arn
+
+  for_each = toset(var.kinesis_arn)
+
+  event_source_arn               = each.value
   function_name                  = var.kinesis_processing_lambda_arn
   starting_position              = "LATEST"
   bisect_batch_on_function_error = true
@@ -33,9 +36,12 @@ resource "aws_lambda_permission" "allow_sqs" {
 }
 
 resource "aws_lambda_permission" "allow_kinesis" {
+
+  for_each = toset(var.kinesis_arn)
+
   statement_id  = "AllowExecutionKinesis"
   action        = "lambda:InvokeFunction"
   function_name = var.kinesis_processing_lambda_name
   principal     = "kinesis.amazonaws.com"
-  source_arn    = var.kinesis_arn
+  source_arn    = each.value
 }

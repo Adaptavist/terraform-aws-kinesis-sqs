@@ -11,7 +11,7 @@ variable "sqs_processing_lambda_name" {
 }
 
 variable "kinesis_arn" {
-  type = string
+  type = list(string)
 }
 
 variable "kinesis_processing_lambda_arn" {
