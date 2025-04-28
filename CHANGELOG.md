@@ -1,3 +1,10 @@
+## [1.22.4](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.22.3...v1.22.4) (2025-04-28)
+
+
+### Bug Fixes
+
+* statement ID to get unique ID ([3c9492f](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/commits/3c9492f4982f2229094d195814b356a86cba93fa))
+
 ## [1.22.3](http://bitbucket.org/adaptavistlabs/module-aws-kinesis-to-sqs/compare/v1.22.2...v1.22.3) (2025-04-24)
 
 
