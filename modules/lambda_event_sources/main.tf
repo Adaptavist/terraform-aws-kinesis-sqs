@@ -37,9 +37,9 @@ resource "aws_lambda_permission" "allow_sqs" {
 
 resource "aws_lambda_permission" "allow_kinesis" {
 
-  for_each = toset(var.kinesis_arn)
+  for_each = { for idx, arn in var.kinesis_arn : idx => arn }
 
-  statement_id  = "AllowExecutionKinesis"
+  statement_id  = "AllowExecutionKinesis-${each.key}"
   action        = "lambda:InvokeFunction"
   function_name = var.kinesis_processing_lambda_name
   principal     = "kinesis.amazonaws.com"
